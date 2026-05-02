@@ -13,21 +13,23 @@ return new class extends Migration
     {
         Schema::create('profile', function (Blueprint $table) {
             $table->id();
-            $table->string('email')->nullable();
+            $table->string('email');
             $table->string('email_information')->nullable();
-            $table->string('phone_number')->nullable();
-            $table->date('Whatsapp_number')->nullable();
-            $table->date('contact_information')->nullable();
+            $table->string('phone_number');
+            $table->string('Whatsapp_number');
+            $table->string('contact_information')->nullable();
             $table->text('Operational_information')->nullable();
+            $table->text('qris_code')->nullable();
+            $table->string('whatsapp_link')->nullable();
             $table->timestamps();
-            $table->string('whatsapp_link');
         });
 
         Schema::create('donasi', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('bank_account_id');
             $table->string('description');
-            $table->string('foto')->nullable();
+            $table->string('photo')->nullable();
             $table->decimal('target_amount', 15, 2);
             $table->decimal('collected_amount', 15, 2)->default(0);
             $table->timestamps();
@@ -65,8 +67,8 @@ return new class extends Migration
         Schema::create('locations', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->text('address'); 
-            $table->integer('child_count'); 
+            $table->text('address');
+            $table->integer('child_count');
             $table->string('google_maps_url')->nullable();
             $table->timestamps();
         });
