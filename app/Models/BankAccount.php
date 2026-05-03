@@ -14,8 +14,13 @@ class BankAccount extends Model
         'account_holder',
     ];
 
-    public function donasis()
+    public function needs()
     {
-        return $this->hasMany(Donasi::class);
+        return $this->hasMany(Need::class);
+    }
+
+    public function donationRecords()
+    {
+        return $this->hasMany(DonationRecord::class);
     }
 }

@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Donasi extends Model
+class Need extends Model
 {
-    protected $table = 'donasis';
+    protected $table = 'needs';
 
     protected $fillable = [
         'title',
@@ -17,7 +17,6 @@ class Donasi extends Model
         'collected_amount',
     ];
 
-    // MANY Donasi -> ONE BankAccount
     public function bankAccount()
     {
         return $this->belongsTo(BankAccount::class);

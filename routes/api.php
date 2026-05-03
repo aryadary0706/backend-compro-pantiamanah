@@ -7,8 +7,9 @@ use App\Http\Controllers\AnakAsuhController;
 use App\Http\Controllers\BankAccountController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\ProgramController;
-use App\Http\Controllers\DonasiController;
+use App\Http\Controllers\NeedController;
 use App\Http\Controllers\GalleryController;
+use App\Http\Controllers\Api\DonationRecordController;
 
 Route::post('/login',  [AuthController::class, 'login']);
 Route::get('/profile', [ProfileController::class, 'index']);
@@ -16,8 +17,12 @@ Route::get('/anak-asuh', [AnakAsuhController::class, 'index']);
 Route::get('/locations', [LocationController::class, 'index']);
 Route::get('/programs', [LocationController::class, 'index']);
 Route::get('/bank-accounts', [BankAccountController::class, 'index']);
-Route::get('/donasi', [DonasiController::class, 'index']);
+Route::get('/donasi', [NeedController::class, 'index']);
 Route::get('/galleries', [GalleryController::class, 'index']);
+Route::get('/donation-form', [DonationRecordController::class, 'index']);
+Route::post('/donation-form', [DonationRecordController::class, 'store']);
+Route::post('/donation-form/{id}', [DonationRecordController::class, 'show']);
+
 
 Route::middleware('auth.jwt')->group(function () {
     Route::post('/logout',  [AuthController::class, 'logout']);
@@ -49,8 +54,8 @@ Route::middleware('auth.jwt')->group(function () {
     Route::delete('/bank-accounts/{id}', [BankAccountController::class, 'destroy']);
 
     //donations
-    Route::post('/donasi', [DonasiController::class, 'store']);
-    Route::delete('/donasi/{id}', [DonasiController::class, 'destroy']);
+    Route::post('/donasi', [NeedController::class, 'store']);
+    Route::delete('/donasi/{id}', [NeedController::class, 'destroy']);
 
     //gallery
     Route::post('/galleries', [GalleryController::class, 'store']);

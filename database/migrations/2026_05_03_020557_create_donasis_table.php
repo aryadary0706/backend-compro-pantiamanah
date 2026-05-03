@@ -19,7 +19,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('donasis', function (Blueprint $table) {
+        Schema::create('needs', function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->string('description');

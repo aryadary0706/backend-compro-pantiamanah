@@ -2,24 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Donasi;
-use App\Models\BankAccount;
+use App\Models\Need;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
-class DonasiController extends Controller
+class NeedController extends Controller
 {
     /**
-     * READ - List donasi
+     * READ - List Need
      */
     public function index()
     {
-        $donasis = Donasi::with('bankAccount')->latest()->get();
+        $Needs = Need::with('bankAccount')->latest()->get();
 
-        if ($donasis->isEmpty()) {
+        if ($Needs->isEmpty()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Belum ada data donasi',
+                'message' => 'Belum ada data Need',
                 'data' => [],
                 'errors' => null
             ], 200);
@@ -27,14 +26,14 @@ class DonasiController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Daftar donasi berhasil diambil',
-            'data' => $donasis,
+            'message' => 'Daftar Need berhasil diambil',
+            'data' => $Needs,
             'errors' => null
         ]);
     }
 
     /**
-     * CREATE - Buat donasi
+     * CREATE - Buat Need
      */
     public function store(Request $request)
     {
@@ -47,12 +46,12 @@ class DonasiController extends Controller
                 'target_amount'    => 'required|numeric|min:1',
             ]);
 
-            $donasi = Donasi::create($validated);
+            $Need = Need::create($validated);
 
             return response()->json([
                 'success' => true,
-                'message' => 'Donasi berhasil dibuat',
-                'data' => $donasi->load('bankAccount'),
+                'message' => 'Need berhasil dibuat',
+                'data' => $Need->load('bankAccount'),
                 'errors' => null
             ], 201);
 
@@ -67,16 +66,16 @@ class DonasiController extends Controller
     }
 
     /**
-     * READ - Detail donasi
+     * READ - Detail Need
      */
     public function show($id)
     {
-        $donasi = Donasi::with('bankAccount')->find($id);
+        $Need = Need::with('bankAccount')->find($id);
 
-        if (!$donasi) {
+        if (!$Need) {
             return response()->json([
                 'success' => false,
-                'message' => 'Donasi tidak ditemukan',
+                'message' => 'Need tidak ditemukan',
                 'data' => null,
                 'errors' => null
             ], 404);
@@ -84,33 +83,33 @@ class DonasiController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Detail donasi berhasil diambil',
-            'data' => $donasi,
+            'message' => 'Detail Need berhasil diambil',
+            'data' => $Need,
             'errors' => null
         ]);
     }
 
     /**
-     * DELETE - Hapus donasi
+     * DELETE - Hapus Need
      */
     public function destroy($id)
     {
-        $donasi = Donasi::find($id);
+        $Need = Need::find($id);
 
-        if (!$donasi) {
+        if (!$Need) {
             return response()->json([
                 'success' => false,
-                'message' => 'Donasi tidak ditemukan',
+                'message' => 'Need tidak ditemukan',
                 'data' => null,
                 'errors' => null
             ], 404);
         }
 
-        $donasi->delete();
+        $Need->delete();
 
         return response()->json([
             'success' => true,
-            'message' => 'Donasi berhasil dihapus',
+            'message' => 'Need berhasil dihapus',
             'data' => null,
             'errors' => null
         ]);
