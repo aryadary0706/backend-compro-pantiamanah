@@ -21,7 +21,6 @@ return new class extends Migration
             $table->text('Operational_information')->nullable();
             $table->text('qris_code')->nullable();
             $table->string('whatsapp_link')->nullable();
-            $table->date('Updated_at');
             $table->timestamps();
         });
     }
