@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Donasi;
+use App\Models\Need;
 
 class DonasiSeeder extends Seeder
 {
@@ -61,7 +61,7 @@ class DonasiSeeder extends Seeder
         ];
 
         foreach ($donasis as $donasi) {
-            Donasi::create($donasi);
+            Need::create($donasi);
         }
     }
 }
