@@ -10,11 +10,10 @@ use Illuminate\Support\Facades\Storage;
 class ProfileController extends Controller
 {
     /**
-     * Menampilkan data profile (Read)
+     * READ - Ambil data profile
      */
     public function index()
     {
-        // Mengambil data pertama yang ditemukan di database
         $profile = Profile::first();
 
         if (!$profile) {
@@ -31,11 +30,10 @@ class ProfileController extends Controller
     }
 
     /**
-     * Membuat atau Memperbarui data profile (Create/Update)
+     * UPDATE - Update data profile (TANPA FILE)
      */
-    public function store(Request $request)
+    public function update(Request $request)
     {
-        // 1. Validasi Input
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|max:255',
             'email_information' => 'nullable|string',
@@ -43,8 +41,7 @@ class ProfileController extends Controller
             'Whatsapp_number' => 'required|string',
             'contact_information' => 'nullable|string',
             'Operational_information' => 'nullable|string',
-            'qris_file' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'whatsapp_link' => 'nullable|string|url',
+            'whatsapp_link' => 'nullable|url',
         ]);
 
         if ($validator->fails()) {
@@ -54,36 +51,48 @@ class ProfileController extends Controller
             ], 422);
         }
 
-        // 2. Ambil data pertama (Single Row Pattern)
         $profile = Profile::firstOrNew();
-
-        // 3. Persiapkan data teks (kecuali file)
-        $data = $request->except('qris_file');
-
-        // 4. Logika Upload File QRIS
-        if ($request->hasFile('qris_file')) {
-            // Hapus file QRIS lama jika ada di storage
-            if ($profile->qris_code && Storage::disk('public')->exists($profile->qris_code)) {
-                Storage::disk('public')->delete($profile->qris_code);
-            }
-
-            // Simpan file baru ke folder 'public/qris'
-            $path = $request->file('qris_file')->store('qris', 'public');
-            $data['qris_code'] = $path;
-        }
-
-        // 5. Isi data ke model
-        $profile->fill($data);
-
-        // 6. Update timestamp kustom 'Updated_at'
-        // Menggunakan now() agar tersimpan waktu perubahan terbaru
-        $profile->Updated_at = now();
-
+        $profile->fill($request->all());
         $profile->save();
 
         return response()->json([
             'status' => 'success',
             'message' => 'Profile berhasil diperbarui',
+            'data' => $profile
+        ]);
+    }
+
+    /**
+     * UPDATE - Upload / Ganti QRIS
+     */
+    public function uploadQris(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'qris_file' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $profile = Profile::firstOrNew();
+
+        // Hapus QRIS lama
+        if ($profile->qris_code && Storage::disk('public')->exists($profile->qris_code)) {
+            Storage::disk('public')->delete($profile->qris_code);
+        }
+
+        // Simpan QRIS baru
+        $path = $request->file('qris_file')->store('qris', 'public');
+        $profile->qris_code = $path;
+        $profile->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'QRIS berhasil diperbarui',
             'data' => $profile
         ]);
     }

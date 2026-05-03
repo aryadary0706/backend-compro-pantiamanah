@@ -7,12 +7,18 @@ use Illuminate\Http\Request;
 
 class LocationController extends Controller
 {
+    // Menampilkan data saat ini (untuk membantu proses update)
+    public function index()
+    {
+        return response()->json(Location::all());
+    }
+
     // CREATE: Menyimpan lokasi baru
     public function store(Request $request)
     {
         $validated = $request->validate([
             'address'         => 'required|string',
-            'google_maps_url' => 'nullable|url', // Memastikan format URL valid
+            'google_maps_url' => 'nullable|url',
         ]);
 
         $location = Location::create($validated);
@@ -43,7 +49,6 @@ class LocationController extends Controller
 
     public function destroy($id)
     {
-        // Cari data berdasarkan ID, jika tidak ketemu otomatis kirim error 404
         $location = Location::findOrFail($id);
 
         // Proses penghapusan
@@ -52,11 +57,5 @@ class LocationController extends Controller
         return response()->json([
             'message' => 'Data lokasi berhasil dihapus dari sistem.'
         ], 200);
-    }
-
-    // Optional: Menampilkan data saat ini (untuk membantu proses update)
-    public function index()
-    {
-        return response()->json(Location::all());
     }
 }
