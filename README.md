@@ -1,59 +1,126 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Backend API - Compro Panti Amanah
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Ini adalah repository backend untuk aplikasi Company Profile Panti Asuhan Amanah. Backend ini dibangun menggunakan **Laravel 12** dan menyediakan RESTful API untuk dikonsumsi oleh aplikasi frontend.
 
-## About Laravel
+## Persyaratan Sistem (Prerequisites)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Sebelum memulai, pastikan sistem Anda memiliki instalasi berikut:
+- **PHP** >= 8.2
+- **Composer** (untuk manajemen dependensi PHP)
+- **Git**
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Panduan Instalasi (Setup)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Ikuti langkah-langkah berikut untuk menjalankan project ini di komputer lokal Anda:
 
-## Learning Laravel
+1. **Clone Repository**
+   ```bash
+   git clone <url-repo-ini>
+   cd backend-compro-pantiamanah
+   ```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+2. **Install Dependensi PHP**
+   ```bash
+   composer install
+   ```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+3. **Konfigurasi Environment**
+   Duplikat file `.env.example` menjadi `.env`.
+   ```bash
+   cp .env.example .env
+   ```
+   > **Catatan untuk Frontend Dev:** Secara default, project ini menggunakan database `sqlite` agar mudah dijalankan tanpa perlu setup aplikasi database terpisah seperti MySQL.
 
-## Laravel Sponsors
+4. **Generate Application Key & JWT Secret**
+   Jalankan perintah ini untuk membuat *encryption key* Laravel dan *secret key* untuk token JWT (autentikasi).
+   ```bash
+   php artisan key:generate
+   php artisan jwt:secret
+   ```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+5. **Migrasi Database dan Data Awal (Seeder)**
+   Jalankan perintah berikut untuk membuat file sqlite (jika belum ada), membuat struktur tabel di database, dan mengisi data awal (dummy data) agar API siap digunakan:
+   ```bash
+   php artisan migrate:fresh --seed
+   ```
 
-### Premium Partners
+6. **Link Storage (Untuk Upload Gambar)**
+   Agar file/gambar yang diupload via CMS (seperti QRIS atau Galeri) bisa diakses oleh frontend melalui URL publik, jalankan:
+   ```bash
+   php artisan storage:link
+   ```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+7. **Jalankan Server Lokal**
+   ```bash
+   php artisan serve
+   ```
+   Backend sekarang berjalan di `http://127.0.0.1:8000`. Gunakan base URL ini (yakni `http://127.0.0.1:8000/api`) di aplikasi React / frontend Anda.
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Autentikasi (Authentication)
 
-## Code of Conduct
+Aplikasi ini menggunakan **JWT (JSON Web Token)** untuk autentikasi dan memproteksi endpoint admin.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- **Login**: Lakukan `POST /api/login` dengan mengirimkan field `email` dan `password`. Response sukses akan mengembalikan `access_token`.
+- **Bearer Token**: Untuk mengakses API yang terproteksi (CMS), Anda harus menyertakan token tersebut di HTTP Headers pada setiap request:
+  ```http
+  Authorization: Bearer <access_token_anda>
+  ```
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Daftar API Endpoints
 
-## License
+Berikut adalah daftar endpoint yang tersedia di aplikasi ini.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 🔓 Public Endpoints (Tanpa Token)
+Digunakan untuk halaman publik / *landing page*.
+
+| Method | Endpoint | Deskripsi |
+| --- | --- | --- |
+| `POST` | `/api/login` | Melakukan login untuk mendapatkan Token. |
+| `GET` | `/api/profile` | Mengambil data profil dan identitas Panti Asuhan. |
+| `GET` | `/api/anak-asuh` | Mengambil daftar anak asuh. |
+| `GET` | `/api/locations` | Mengambil data lokasi panti. |
+| `GET` | `/api/programs` | Mengambil daftar program kegiatan. |
+| `GET` | `/api/bank-accounts` | Mengambil daftar rekening bank panti. |
+| `GET` | `/api/donasi` | Mengambil data kebutuhan donasi. |
+| `GET` | `/api/galleries` | Mengambil data foto galeri panti. |
+| `GET` | `/api/donation-form` | Mengambil data riwayat donasi yang masuk. |
+| `POST` | `/api/donation-form` | Endpoint untuk user mensubmit form donasi. |
+| `POST` | `/api/donation-form/{id}`| Menampilkan detail form donasi yang spesifik berdasarkan ID. |
+
+### 🔒 Protected Endpoints (Butuh Token JWT)
+Endpoint di bawah ini digunakan untuk *dashboard admin (CMS)* dan wajib menyertakan token di Header.
+
+#### Auth & Profil User
+| Method | Endpoint | Deskripsi |
+| --- | --- | --- |
+| `POST` | `/api/logout` | Logout dan menonaktifkan token saat ini. |
+| `POST` | `/api/refresh`| Memperbarui (refresh) token JWT. |
+| `GET`  | `/api/me`     | Mendapatkan data user admin yang sedang login. |
+
+#### Data Panti (Profile)
+| Method | Endpoint | Deskripsi |
+| --- | --- | --- |
+| `PUT`  | `/api/profile` | Update identitas Panti Asuhan. |
+| `POST` | `/api/profile/qris` | Mengunggah gambar QRIS. |
+
+#### Data Master (CRUD)
+Berikut rute untuk menambah (`POST`), mengubah (`PUT`), dan menghapus (`DELETE`) data:
+
+- **Anak Asuh:** `/api/anak-asuh` (POST) \| `/api/anak-asuh/{id}` (PUT, DELETE)
+- **Lokasi Panti:** `/api/locations` (POST) \| `/api/locations/{id}` (PUT, DELETE)
+- **Program Panti:** `/api/programs` (POST) \| `/api/programs/{id}` (PUT, DELETE)
+- **Rekening Bank:** `/api/bank-accounts` (POST) \| `/api/bank-accounts/{id}` (PUT, DELETE)
+- **Donasi (Kebutuhan):** `/api/donasi` (POST) \| `/api/donasi/{id}` (DELETE)
+- **Galeri Foto:** `/api/galleries` (POST) \| `/api/galleries/{id}` (DELETE)
+
+---
+
+## Catatan Tambahan (FAQ)
+- **Format Response**: Backend mengembalikan response dalam format `JSON`.
+- **Error Handling**: Jika ada *error* atau validasi yang gagal (misal kolom mandatory kosong), API akan merespon dengan status code **422 (Unprocessable Entity)** beserta detail message error di dalamnya. Jika akses ditolak karena token, responsnya adalah **401 (Unauthorized)**.
+- **Akses Gambar**: Jika endpoint mengembalikan direktori file/gambar, tambahkan base URL di depannya agar tampil di web. (contoh jika API mereturn `storage/galeri/foto.jpg`, URL lengkapnya adalah `http://127.0.0.1:8000/storage/galeri/foto.jpg`).
+- **CORS**: Jika terjadi masalah CORS saat integrasi awal dengan frontend lokal (seperti `localhost:5173` atau `localhost:3000`), silakan periksa dan sesuaikan file konfigurasi CORS Laravel di sisi backend.
