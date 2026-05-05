@@ -19,6 +19,12 @@ class DonationRecordController extends Controller
             ->latest()
             ->paginate(10);
 
+        // Transformasi untuk menyertakan URL gambar
+        $records->getCollection()->transform(function ($record) {
+            $record->payment_proof_url = $record->payment_proof ? Storage::cloud()->url($record->payment_proof) : null;
+            return $record;
+        });
+
         return response()->json([
             'success' => true,
             'message' => 'List donation records',
@@ -43,10 +49,12 @@ class DonationRecordController extends Controller
         ]);
 
         // upload bukti pembayaran
-        $data['payment_proof'] = $request->file('payment_proof')
-            ->store('payment_proofs', 'public');
+        // Upload ke S3
+        $path = $request->file('payment_proof')->store('payment_proofs', 's3');
+        $data['payment_proof'] = $path;
 
         $record = DonationRecord::create($data);
+        $record->payment_proof_url = Storage::cloud()->url($path);
 
         return response()->json([
             'success' => true,
@@ -59,7 +67,7 @@ class DonationRecordController extends Controller
      * GET /api/donation-records/{id}
      * Detail donation record
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
         $record = DonationRecord::with(['donasi', 'bankAccount'])->find($id);
 

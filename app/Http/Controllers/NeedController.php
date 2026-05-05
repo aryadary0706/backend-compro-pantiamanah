@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Need;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Storage;
 
 class NeedController extends Controller
 {
@@ -13,22 +14,15 @@ class NeedController extends Controller
      */
     public function index()
     {
-        $Needs = Need::with('bankAccount')->latest()->get();
-
-        if ($Needs->isEmpty()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Belum ada data Need',
-                'data' => [],
-                'errors' => null
-            ], 200);
-        }
+        $Needs = Need::with('bankAccount')->latest()->get()->map(function ($need) {
+            $need->photo_url = $need->photo ? Storage::cloud()->url($need->photo) : null;
+            return $need;
+        });
 
         return response()->json([
             'success' => true,
             'message' => 'Daftar Need berhasil diambil',
-            'data' => $Needs,
-            'errors' => null
+            'data' => $Needs
         ]);
     }
 
@@ -41,12 +35,17 @@ class NeedController extends Controller
             $validated = $request->validate([
                 'title'            => 'required|string|max:255',
                 'description'      => 'required|string',
-                'photo'             => 'nullable|string',
+                'photo'            => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
                 'bank_account_id'  => 'required|exists:bank_accounts,id',
                 'target_amount'    => 'required|numeric|min:1',
             ]);
 
+            if ($request->hasFile('photo')) {
+                $validated['photo'] = $request->file('photo')->store('needs', 's3');
+            }
+
             $Need = Need::create($validated);
+            $Need->photo_url = $Need->photo ? Storage::cloud()->url($Need->photo) : null;
 
             return response()->json([
                 'success' => true,
@@ -54,7 +53,6 @@ class NeedController extends Controller
                 'data' => $Need->load('bankAccount'),
                 'errors' => null
             ], 201);
-
         } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
@@ -103,6 +101,10 @@ class NeedController extends Controller
                 'data' => null,
                 'errors' => null
             ], 404);
+        }
+
+        if ($Need->photo) {
+            Storage::disk('s3')->delete($Need->photo);
         }
 
         $Need->delete();

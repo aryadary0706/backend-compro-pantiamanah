@@ -23,6 +23,8 @@ class ProfileController extends Controller
             ], 404);
         }
 
+        $profile->qris_url = $profile->qris_code ? Storage::cloud()->url($profile->qris_code) : null;
+
         return response()->json([
             'status' => 'success',
             'data' => $profile
@@ -42,6 +44,7 @@ class ProfileController extends Controller
             'contact_information' => 'nullable|string',
             'Operational_information' => 'nullable|string',
             'whatsapp_link' => 'nullable|url',
+            'qris_file' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -80,15 +83,17 @@ class ProfileController extends Controller
 
         $profile = Profile::firstOrNew();
 
-        // Hapus QRIS lama
-        if ($profile->qris_code && Storage::disk('public')->exists($profile->qris_code)) {
-            Storage::disk('public')->delete($profile->qris_code);
+        //Hapus QRIS LAMA
+        if ($profile->qris_code) {
+            Storage::disk('s3')->delete($profile->qris_code);
         }
 
         // Simpan QRIS baru
-        $path = $request->file('qris_file')->store('qris', 'public');
+        $path = $request->file('qris_file')->store('qris', 's3');
         $profile->qris_code = $path;
         $profile->save();
+
+        $profile->qris_url = Storage::cloud()->url($path);
 
         return response()->json([
             'status' => 'success',

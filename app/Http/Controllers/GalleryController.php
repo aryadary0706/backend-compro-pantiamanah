@@ -14,7 +14,11 @@ class GalleryController extends Controller
      */
     public function index()
     {
-        $galleries = Gallery::latest()->get();
+        // Gunakan map untuk menambahkan URL lengkap dari S3 ke setiap item
+        $galleries = Gallery::latest()->get()->map(function ($item) {
+            $item->image_url = $item->image_path ? Storage::cloud()->url($item->image_path) : null;
+            return $item;
+        });
 
         if ($galleries->isEmpty()) {
             return response()->json([
@@ -45,14 +49,18 @@ class GalleryController extends Controller
                 'uploaded_at' => 'required|date',
             ]);
 
-            // Upload image ke storage/app/public/galleries
-            $path = $request->file('image')->store('galleries', 'public');
+            // Upload image ke S3 (Supabase)
+            // Pastikan folder 'galleries' sudah sesuai dengan keinginan Anda
+            $path = $request->file('image')->store('galleries', 's3');
 
             $gallery = Gallery::create([
                 'title' => $validated['title'],
                 'image_path' => $path,
                 'uploaded_at' => $validated['uploaded_at'],
             ]);
+
+            // Tambahkan URL agar response JSON lengkap
+            $gallery->image_url = Storage::cloud()->url($path);
 
             return response()->json([
                 'success' => true,
@@ -86,6 +94,12 @@ class GalleryController extends Controller
             ], 404);
         }
 
+        // PENTING: Hapus file fisik dari Supabase Storage
+        if ($gallery->image_path) {
+            Storage::disk('s3')->delete($gallery->image_path);
+        }
+
+        // Baru hapus data dari database PostgreSQL
         $gallery->delete();
 
         return response()->json([
