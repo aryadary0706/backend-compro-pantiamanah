@@ -81,9 +81,11 @@ class GalleryController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Gallery tidak ditemukan',
-                'data' => null,
-                'errors' => null
             ], 404);
+        }
+
+        if ($gallery->image_path) {
+            Storage::disk('public')->delete($gallery->image_path);
         }
 
         $gallery->delete();
@@ -91,8 +93,58 @@ class GalleryController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Gallery berhasil dihapus',
-            'data' => null,
-            'errors' => null
         ]);
+    } 
+    
+        /**
+        * UPDATE - Update gallery
+        */
+    public function update(Request $request, $id)
+    {
+        $gallery = Gallery::find($id);
+
+        if (!$gallery) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gallery tidak ditemukan',
+            ], 404);
+        }
+
+        try {
+            $validated = $request->validate([
+                'title' => 'required|string|max:255',
+                'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+                'uploaded_at' => 'required|date',
+            ]);
+
+            if ($request->hasFile('image')) {
+                // Hapus gambar lama jika ada
+                if ($gallery->image_path) {
+                    Storage::disk('public')->delete($gallery->image_path);
+                }
+
+                // Upload gambar baru
+                $path = $request->file('image')->store('galleries', 'public');
+                $gallery->image_path = $path;
+            }
+
+            $gallery->title = $validated['title'];
+            $gallery->uploaded_at = $validated['uploaded_at'];
+            $gallery->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Gallery berhasil diperbarui',
+                'data' => $gallery,
+                'errors' => null
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'data' => null,
+                'errors' => $e->errors()
+            ], 422);
+        }
     }
 }

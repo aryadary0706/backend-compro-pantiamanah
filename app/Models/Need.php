@@ -17,6 +17,17 @@ class Need extends Model
         'collected_amount',
     ];
 
+    protected $appends = [
+        'photo_url'
+    ];
+
+    public function getPhotoUrlAttribute()
+    {
+        return $this->photo
+            ? asset('storage/' . $this->photo)
+            : null;
+    }
+
     public function bankAccount()
     {
         return $this->belongsTo(BankAccount::class);

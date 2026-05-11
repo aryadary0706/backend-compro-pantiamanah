@@ -9,22 +9,85 @@ use App\Http\Controllers\LocationController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\NeedController;
 use App\Http\Controllers\GalleryController;
-use App\Http\Controllers\Api\DonationRecordController;
+use App\Http\Controllers\DonationRecordController;
 
-Route::post('/login',  [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login']);
+
+/*
+|--------------------------------------------------------------------------
+| PUBLIC
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/profile', [ProfileController::class, 'index']);
-Route::get('/anak-asuh', [AnakAsuhController::class, 'index']);
-Route::get('/locations', [LocationController::class, 'index']);
-Route::get('/programs', [LocationController::class, 'index']);
-Route::get('/bank-accounts', [BankAccountController::class, 'index']);
-Route::get('/donasi', [NeedController::class, 'index']);
-Route::get('/galleries', [GalleryController::class, 'index']);
-Route::get('/donation-form', [DonationRecordController::class, 'index']);
-Route::post('/donation-form', [DonationRecordController::class, 'store']);
-Route::post('/donation-form/{id}', [DonationRecordController::class, 'show']);
 
+Route::get('/anak-asuh', [AnakAsuhController::class, 'index']);
+
+Route::get('/locations', [LocationController::class, 'index']);
+
+Route::get('/programs', [ProgramController::class, 'index']);
+
+Route::get('/bank-accounts', [BankAccountController::class, 'index']);
+
+Route::get('/needs', [NeedController::class, 'index']);
+
+Route::get('/needs/{id}', [NeedController::class, 'show']);
+
+Route::get('/galleries', [GalleryController::class, 'index']);
+
+Route::get('/donations', [DonationRecordController::class, 'index']);
+
+Route::get('/donations/{id}', [DonationRecordController::class, 'show']);
+
+
+/*
+|--------------------------------------------------------------------------
+| AUTH
+|--------------------------------------------------------------------------
+*/
 
 Route::middleware('auth.jwt')->group(function () {
+
+    Route::post('/logout', [AuthController::class, 'logout']);
+
+    /*
+    |--------------------------------------------------------------------------
+    | NEEDS
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post('/needs', [NeedController::class, 'store']);
+
+    Route::put('/needs/{id}', [NeedController::class, 'update']);
+
+    Route::delete('/needs/{id}', [NeedController::class, 'destroy']);
+
+    /*
+    |--------------------------------------------------------------------------
+    | DONATIONS
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post('/donations', [DonationRecordController::class, 'store']);
+
+    Route::put('/donations/{id}', [DonationRecordController::class, 'update']);
+
+    Route::delete('/donations/{id}', [DonationRecordController::class, 'destroy']);
+
+    Route::get('/donations', [DonationRecordController::class, 'index']);
+
+    /*
+    |--------------------------------------------------------------------------
+    | BANK ACCOUNTS
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post('/bank-accounts', [BankAccountController::class, 'store']);
+
+    Route::put('/bank-accounts/{id}', [BankAccountController::class, 'update']);
+
+    Route::delete('/bank-accounts/{id}', [BankAccountController::class, 'destroy']);
+
     Route::post('/logout',  [AuthController::class, 'logout']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::get('/me',       [AuthController::class, 'me']);
@@ -42,22 +105,15 @@ Route::middleware('auth.jwt')->group(function () {
     Route::post('/locations', [LocationController::class, 'store']);
     Route::put('/locations/{id}', [LocationController::class, 'update']);
     Route::delete('/locations/{id}', [LocationController::class, 'destroy']);
-
-    //programs
-    Route::post('/programs', [ProgramController::class, 'store']);
-    Route::put('/programs/{id}', [ProgramController::class, 'update']);
-    Route::delete('/programs/{id}', [ProgramController::class, 'destroy']);
-
-    //bank accounts
-    Route::post('/bank-accounts', [BankAccountController::class, 'store']);
-    Route::put('/bank-accounts/{id}', [BankAccountController::class, 'update']);
-    Route::delete('/bank-accounts/{id}', [BankAccountController::class, 'destroy']);
-
-    //donations
-    Route::post('/donasi', [NeedController::class, 'store']);
-    Route::delete('/donasi/{id}', [NeedController::class, 'destroy']);
+    Route::get('/locations', [LocationController::class, 'index']);
 
     //gallery
     Route::post('/galleries', [GalleryController::class, 'store']);
     Route::delete('/galleries/{id}', [GalleryController::class, 'destroy']);
+    Route::put('/galleries/{id}', [GalleryController::class, 'update']);
+
+    Route::post('/programs', [ProgramController::class, 'store']);
+    Route::put('/programs/{id}', [ProgramController::class, 'update']);
+    Route::delete('/programs/{id}', [ProgramController::class, 'destroy']);
+    Route::get('/programs', [ProgramController::class, 'index']);
 });

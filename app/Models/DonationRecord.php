@@ -30,4 +30,14 @@ class DonationRecord extends Model
     {
         return $this->belongsTo(BankAccount::class);
     }
+    protected $appends = [
+        'payment_proof_url'
+    ];
+
+    public function getPaymentProofUrlAttribute()
+    {
+        return $this->payment_proof
+            ? asset('storage/' . $this->payment_proof)
+            : null;
+    }
 }

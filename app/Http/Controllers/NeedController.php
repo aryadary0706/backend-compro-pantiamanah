@@ -41,10 +41,20 @@ class NeedController extends Controller
             $validated = $request->validate([
                 'title'            => 'required|string|max:255',
                 'description'      => 'required|string',
-                'photo'             => 'nullable|string',
+                'photo'             => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
                 'bank_account_id'  => 'required|exists:bank_accounts,id',
                 'target_amount'    => 'required|numeric|min:1',
             ]);
+
+            if ($request->hasFile('photo')) {
+
+                $validated['photo'] =
+                    $request->file('photo')
+                        ->store(
+                            'needs',
+                            'public'
+                        );
+            }
 
             $Need = Need::create($validated);
 
@@ -113,5 +123,57 @@ class NeedController extends Controller
             'data' => null,
             'errors' => null
         ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $need = Need::find($id);
+
+        if (!$need) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Need tidak ditemukan',
+            ], 404);
+        }
+
+        try {
+
+            $validated = $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'required|string',
+                'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+                'bank_account_id'
+                    => 'required|exists:bank_accounts,id',
+                'target_amount'
+                    => 'required|numeric|min:1',
+            ]);
+
+            if ($request->hasFile('photo')) {
+
+                $validated['photo'] =
+                    $request->file('photo')
+                        ->store(
+                            'needs',
+                            'public'
+                        );
+            }
+
+            $need->update($validated);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Need berhasil diupdate',
+                'data' => $need
+            ]);
+
+        } catch (ValidationException $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $e->errors()
+            ], 422);
+        }
     }
 }
