@@ -30,7 +30,7 @@ class ProfileController extends Controller
     }
 
     /**
-     * UPDATE - Update data profile (TANPA FILE)
+     * UPDATE - Update data profile (Fokus pada Teks)
      */
     public function update(Request $request)
     {
@@ -52,7 +52,10 @@ class ProfileController extends Controller
         }
 
         $profile = Profile::firstOrNew();
-        $profile->fill($request->all());
+
+        $data = $request->except(['qris_code']);
+
+        $profile->fill($data);
         $profile->save();
 
         return response()->json([
@@ -63,7 +66,7 @@ class ProfileController extends Controller
     }
 
     /**
-     * UPDATE - Upload / Ganti QRIS
+     * UPDATE - Upload / Ganti QRIS (Fokus pada File)
      */
     public function uploadQris(Request $request)
     {
@@ -80,12 +83,14 @@ class ProfileController extends Controller
 
         $profile = Profile::firstOrNew();
 
-        // Hapus QRIS lama
-        if ($profile->qris_code && Storage::disk('public')->exists($profile->qris_code)) {
-            Storage::disk('public')->delete($profile->qris_code);
+        if ($profile->qris_code) {
+            $oldPath = method_exists($profile, 'getRawOriginal')
+                       ? $profile->getRawOriginal('qris_code')
+                       : $profile->qris_code;
+
+            Storage::disk('public')->delete($oldPath);
         }
 
-        // Simpan QRIS baru
         $path = $request->file('qris_file')->store('qris', 'public');
         $profile->qris_code = $path;
         $profile->save();

@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('donor_name');
             $table->string('phone_number');
             $table->string('tujuan');
-            $table->foreignId('donasi_id')->nullable()->constrained('needs')->nullOnDelete();
             $table->foreignId('bank_account_id')->constrained('bank_accounts')->restrictOnDelete();
             $table->decimal('amount', 15, 2);
             $table->string('payment_proof');

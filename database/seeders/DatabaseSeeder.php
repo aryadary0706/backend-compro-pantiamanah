@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
             AnakAsuhSeeder::class,
             ProgramSeeder::class,
             BankAccountSeeder::class,
-            DonasiSeeder::class
+            DonationRecordSeeder::class
         ]);
     }
 }

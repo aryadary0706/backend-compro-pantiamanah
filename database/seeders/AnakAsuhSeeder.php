@@ -19,7 +19,7 @@ class AnakAsuhSeeder extends Seeder
                 'education' => 'SD Negeri 01',
                 'badge' => 'Rajin',
                 'description' => 'Anak yang rajin membantu teman.',
-                'photo' => 'photos/anak_asuh/test-image_anakasuh1.jpeg',
+                'photo' => 'anak_asuh/test-image_anakasuh1.jpeg',
             ],
             [
                 'name' => 'Siti Aminah',

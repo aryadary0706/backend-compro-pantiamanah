@@ -18,10 +18,8 @@ class Profile extends Model
         'Operational_information',
         'qris_code',
         'whatsapp_link',
-        'Updated_at', // Kolom manual untuk tracking
+        'Updated_at',
     ];
-
-    // Boot method untuk update kolom 'Updated_at' secara otomatis saat ada perubahan
     protected static function boot()
     {
         parent::boot();
@@ -31,13 +29,10 @@ class Profile extends Model
         });
     }
 
-    // Otomatis kasih URL lengkap untuk QRIS
-    public function getQrisUrlAttribute()
-    {
-        return $this->qris_code
-            ? asset('storage/' . $this->qris_code)
-            : null;
-    }
-
     protected $appends = ['qris_url'];
+
+    public function getImageUrlAttribute()
+    {
+        return $this->qris_code ? asset('storage/' . $this->qris_code) : null;
+    }
 }

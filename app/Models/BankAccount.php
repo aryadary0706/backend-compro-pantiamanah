@@ -14,11 +14,6 @@ class BankAccount extends Model
         'account_holder',
     ];
 
-    public function needs()
-    {
-        return $this->hasMany(Need::class);
-    }
-
     public function donationRecords()
     {
         return $this->hasMany(DonationRecord::class);

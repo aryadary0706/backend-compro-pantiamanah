@@ -7,7 +7,6 @@ use App\Http\Controllers\AnakAsuhController;
 use App\Http\Controllers\BankAccountController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\ProgramController;
-use App\Http\Controllers\NeedController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\DonationRecordController;
 
@@ -29,10 +28,6 @@ Route::get('/programs', [ProgramController::class, 'index']);
 
 Route::get('/bank-accounts', [BankAccountController::class, 'index']);
 
-Route::get('/needs', [NeedController::class, 'index']);
-
-Route::get('/needs/{id}', [NeedController::class, 'show']);
-
 Route::get('/galleries', [GalleryController::class, 'index']);
 
 Route::get('/donations', [DonationRecordController::class, 'index']);
@@ -49,18 +44,6 @@ Route::get('/donations/{id}', [DonationRecordController::class, 'show']);
 Route::middleware('auth.jwt')->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout']);
-
-    /*
-    |--------------------------------------------------------------------------
-    | NEEDS
-    |--------------------------------------------------------------------------
-    */
-
-    Route::post('/needs', [NeedController::class, 'store']);
-
-    Route::put('/needs/{id}', [NeedController::class, 'update']);
-
-    Route::delete('/needs/{id}', [NeedController::class, 'destroy']);
 
     /*
     |--------------------------------------------------------------------------

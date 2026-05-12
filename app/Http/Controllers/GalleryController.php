@@ -45,7 +45,6 @@ class GalleryController extends Controller
                 'uploaded_at' => 'required|date',
             ]);
 
-            // Upload image ke storage/app/public/galleries
             $path = $request->file('image')->store('galleries', 'public');
 
             $gallery = Gallery::create([
@@ -94,8 +93,8 @@ class GalleryController extends Controller
             'success' => true,
             'message' => 'Gallery berhasil dihapus',
         ]);
-    } 
-    
+    }
+
         /**
         * UPDATE - Update gallery
         */

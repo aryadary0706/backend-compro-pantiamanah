@@ -8,14 +8,12 @@ use Illuminate\Support\Facades\Storage;
 
 class AnakAsuhController extends Controller
 {
-    // READ: Menampilkan semua data
     public function index()
     {
         $anakAsuh = AnakAsuh::all();
         return response()->json($anakAsuh);
     }
 
-    // CREATE: Menambah data baru
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -29,20 +27,21 @@ class AnakAsuhController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-            $validated['photo'] = $request->file('photo')->store('photos/anak_asuh', 'public');
+            $validated['photo'] = $request->file('photo')->store('anak_asuh', 'public');
         }
 
         $anakAsuh = AnakAsuh::create($validated);
         return response()->json(['message' => 'Data berhasil dibuat', 'data' => $anakAsuh], 201);
     }
 
-    // UPDATE: Hanya atribut tertentu (age, education, badge, description, photo)
     public function update(Request $request, $id)
     {
         $anakAsuh = AnakAsuh::findOrFail($id);
 
         $validated = $request->validate([
+            'name'        => 'sometimes|string|max:255',
             'age'         => 'sometimes|integer',
+            'gender'      => 'sometimes|in:Laki-laki,Perempuan',
             'education'   => 'sometimes|string',
             'badge'       => 'nullable|string',
             'description' => 'nullable|string',
@@ -52,20 +51,24 @@ class AnakAsuhController extends Controller
             if ($anakAsuh->photo) {
                 Storage::disk('public')->delete($anakAsuh->photo);
             }
-            $validated['photo'] = $request->file('photo')->store('photos/anak_asuh', 'public');
+            $validated['photo'] = $request->file('photo')->store('anak_asuh', 'public');
         }
-        $anakAsuh->update($validated);
 
-        return response()->json(['message' => 'Data berhasil diperbarui', 'data' => $anakAsuh]);
+        return response()->json([
+            'message' => 'Data berhasil diperbarui',
+             'data' => $anakAsuh
+        ]);
     }
 
     public function destroy($id)
     {
         $anakAsuh = AnakAsuh::findOrFail($id);
+
         if ($anakAsuh->photo) {
             Storage::disk('public')->delete($anakAsuh->photo);
         }
+
         $anakAsuh->delete();
-        return response()->json(['message' => 'Data berhasil dihapus']);
+        return response()->json(['message' => 'Anak asuh berhasil dihapus']);
     }
 }

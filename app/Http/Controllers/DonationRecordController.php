@@ -9,16 +9,18 @@ use Illuminate\Support\Facades\Storage;
 
 class DonationRecordController extends Controller
 {
-    /**
-     * GET /api/donation-records
-     * List semua donation records
-     */
-
     public function index()
     {
         $records = DonationRecord::with(['need', 'bankAccount'])
             ->latest()
             ->paginate(10);
+
+        $records->getCollection()->transform(function ($record) {
+            if ($record->payment_proof) {
+                $record->payment_proof = url(Storage::url($record->payment_proof));
+            }
+            return $record;
+        });
 
         return response()->json([
             'success' => true,
@@ -27,23 +29,17 @@ class DonationRecordController extends Controller
         ]);
     }
 
-    /**
-     * POST /api/donation-records
-     * Create donation record (public)
-     */
     public function store(Request $request)
     {
         $data = $request->validate([
             'donor_name' => 'required|string|max:255',
             'phone_number' => 'required|string|max:20',
             'tujuan' => 'required|string|max:255',
-            'donasi_id' => 'nullable|exists:needs,id',
             'bank_account_id' => 'required|exists:bank_accounts,id',
             'amount' => 'required|numeric|min:1000',
             'payment_proof' => 'required|image|max:2048',
         ]);
 
-        // upload bukti pembayaran
         if ($request->hasFile('payment_proof')) {
             $data['payment_proof'] =
                 $request->file('payment_proof')
@@ -61,10 +57,7 @@ class DonationRecordController extends Controller
             'data' => $record
         ], 201);
     }
-    /**
-     * GET /api/donation-records/{id}
-     * Detail donation record
-     */
+
     public function show($id)
     {
         $record = DonationRecord::with(['need', 'bankAccount'])->find($id);
@@ -86,7 +79,6 @@ class DonationRecordController extends Controller
     public function destroy($id)
     {
         $record = DonationRecord::findOrFail($id);
-
         if ($record->payment_proof) {
 
             Storage::disk('public')
@@ -117,9 +109,7 @@ class DonationRecordController extends Controller
             'donor_name' => 'required|string|max:255',
             'phone_number' => 'required|string|max:20',
             'tujuan' => 'required|string|max:255',
-            'donasi_id' => 'nullable|exists:needs,id',
-            'bank_account_id'
-                => 'required|exists:bank_accounts,id',
+            'bank_account_id' => 'required|exists:bank_accounts,id',
             'amount' => 'required|numeric|min:1000',
         ]);
 

@@ -19,13 +19,6 @@ class DonationRecord extends Model
         'payment_proof',
     ];
 
-    /* ================= RELATIONS ================= */
-
-    public function need()
-    {
-        return $this->belongsTo(Need::class, 'donasi_id');
-    }
-
     public function bankAccount()
     {
         return $this->belongsTo(BankAccount::class);

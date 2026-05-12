@@ -18,19 +18,6 @@ return new class extends Migration
             $table->string('account_holder');
             $table->timestamps();
         });
-
-        Schema::create('needs', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->string('description');
-            $table->string('photo')->nullable();
-            $table->decimal('target_amount', 15, 2);
-            $table->decimal('collected_amount', 15, 2)->default(0);
-            $table->foreignId('bank_account_id')
-            ->constrained('bank_accounts')
-            ->onDelete('cascade');
-            $table->timestamps();
-        });
     }
 
     /**
@@ -39,6 +26,5 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('bank_accounts');
-        Schema::dropIfExists('donasis');
     }
 };
