@@ -11,7 +11,7 @@ class DonationRecordController extends Controller
 {
     public function index()
     {
-        $records = DonationRecord::with(['need', 'bankAccount'])
+        $records = DonationRecord::with(['bankAccount'])
             ->latest()
             ->paginate(10);
 
@@ -60,7 +60,7 @@ class DonationRecordController extends Controller
 
     public function show($id)
     {
-        $record = DonationRecord::with(['need', 'bankAccount'])->find($id);
+        $record = DonationRecord::with(['bankAccount'])->find($id);
 
         if (!$record) {
             return response()->json([
