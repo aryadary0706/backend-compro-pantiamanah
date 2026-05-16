@@ -66,7 +66,7 @@ class DonationRecordController extends Controller
 
     public function show($id)
     {
-        $record = DonationRecord::with(['need', 'bankAccount'])->find($id);
+        $record = DonationRecord::with(['bankAccount'])->find($id);
 
         if (!$record) {
             return response()->json([
