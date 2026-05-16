@@ -78,6 +78,7 @@ Route::middleware('auth.jwt')->group(function () {
     //Profiles - Identitas panti asuhan amanah yang dapat diedit
     Route::put('/profile', [ProfileController::class, 'update']);
     Route::post('/profile/qris', [ProfileController::class, 'uploadQris']);
+    Route::get('/profile', [ProfileController::class, 'index']);
 
     //Anak Asuh
     Route::post('/anak-asuh', [AnakAsuhController::class, 'store']);

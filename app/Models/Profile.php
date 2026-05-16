@@ -31,8 +31,10 @@ class Profile extends Model
 
     protected $appends = ['qris_url'];
 
-    public function getImageUrlAttribute()
+    public function getQrisUrlAttribute()
     {
-        return $this->qris_code ? asset('storage/' . $this->qris_code) : null;
+        return $this->qris_code
+            ? asset('storage/' . $this->qris_code)
+            : null;
     }
 }
