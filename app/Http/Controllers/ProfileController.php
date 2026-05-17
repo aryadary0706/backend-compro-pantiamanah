@@ -32,7 +32,8 @@ class ProfileController extends Controller
 
         $data = $profile->toArray();
         if ($profile->qris_code) {
-            $data['qris_url'] = Storage::disk('public')->url($profile->getRawOriginal('qris_code'));
+            $rawPath = $profile->getRawOriginal('qris_code');
+            $data['qris_url'] = asset('storage/' . $rawPath);
         }
 
         return response()->json([
@@ -115,7 +116,7 @@ class ProfileController extends Controller
                 'status'  => 'success',
                 'message' => 'QRIS berhasil diperbarui',
                 'data'    => array_merge($profile->toArray(), [
-                    'qris_url' => Storage::disk('public')->url($path)
+                    'qris_url' => asset('storage/' . $path)
                 ])
             ]);
         } catch (\Exception $e) {
