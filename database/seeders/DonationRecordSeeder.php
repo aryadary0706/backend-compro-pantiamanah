@@ -24,7 +24,7 @@ class DonationRecordSeeder extends Seeder
                 'tujuan' => 'Sedekah Makanan Buka Puasa',
                 'bank_account_id' => $bank1->id ?? 1,
                 'amount' => 500000.00,
-                'payment_proof' => 'payment_proofs/bukti_transfer_sample.jpg',
+                'payment_proof' => 'payment_proofs/bukti_transfer_sample.png',
             ],
             [
                 'donor_name' => 'Siti Aminah',
@@ -40,7 +40,7 @@ class DonationRecordSeeder extends Seeder
                 'tujuan' => 'Zakat Mal',
                 'bank_account_id' => $bank1->id ?? 1,
                 'amount' => 250000.00,
-                'payment_proof' => 'payment_proofs/bukti_transfer_sample.jpg',
+                'payment_proof' => 'payment_proofs/bukti_transfer_sample.png',
             ],
         ];
 

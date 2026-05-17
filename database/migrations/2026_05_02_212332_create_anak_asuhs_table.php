@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->integer('age');
+            $table->date('tanggal_lahir');
             $table->enum('gender', ['Laki-laki', 'Perempuan']);
             $table->string('education');
             $table->string('badge')->nullable();

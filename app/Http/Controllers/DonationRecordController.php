@@ -69,6 +69,10 @@ class DonationRecordController extends Controller
             ], 404);
         }
 
+        if ($record->payment_proof) {
+            $record->payment_proof = url(Storage::url($record->payment_proof));
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Detail donation record',

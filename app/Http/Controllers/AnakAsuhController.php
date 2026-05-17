@@ -19,6 +19,7 @@ class AnakAsuhController extends Controller
         $validated = $request->validate([
             'name'        => 'required|string|max:255',
             'age'         => 'required|integer',
+            'tanggal_lahir' => 'required|date',
             'gender'      => 'required|in:Laki-laki,Perempuan',
             'education'   => 'required|string',
             'badge'       => 'nullable|string',
@@ -41,6 +42,7 @@ class AnakAsuhController extends Controller
         $validated = $request->validate([
             'name'        => 'sometimes|string|max:255',
             'age'         => 'sometimes|integer',
+            'tanggal_lahir' => 'sometimes|date',
             'gender'      => 'sometimes|in:Laki-laki,Perempuan',
             'education'   => 'sometimes|string',
             'badge'       => 'nullable|string',
@@ -54,9 +56,11 @@ class AnakAsuhController extends Controller
             $validated['photo'] = $request->file('photo')->store('anak_asuh', 'public');
         }
 
+        $anakAsuh->update($validated);
+
         return response()->json([
             'message' => 'Data berhasil diperbarui',
-             'data' => $anakAsuh
+             'data'   => $anakAsuh->fresh()
         ]);
     }
 

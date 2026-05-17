@@ -1,0 +1,33 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+use App\Models\Gallery;
+
+class GallerySeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        $data = [
+            [
+                'title' => 'Kegiatan Anak',
+                'image_path' => 'galleries/foto_gabut.jpeg',
+                'uploaded_at' => now(),
+            ],
+            [
+                'title' => 'Kegiatan Anak',
+                'image_path' => 'galleries/foto_gabut2.jpeg',
+                'uploaded_at' => now(),
+            ],
+        ];
+
+        foreach ($data as $item) {
+            Gallery::create($item);
+        }
+    }
+}

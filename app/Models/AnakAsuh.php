@@ -16,6 +16,7 @@ class AnakAsuh extends Model
     protected $fillable = [
         'name',
         'age',
+        'tanggal_lahir',
         'gender',
         'education',
         'badge',
