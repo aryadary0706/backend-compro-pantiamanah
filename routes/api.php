@@ -45,7 +45,8 @@ Route::middleware('auth.jwt')->group(function () {
     | DONATIONS
     |--------------------------------------------------------------------------
     */
-
+    Route::get('/donations',[DonationRecordController::class, 'index']);
+    Route::get('/donations/{id}',[DonationRecordController::class, 'show']);
     Route::post('/donations', [DonationRecordController::class, 'store']);
     Route::put('/donations/{id}', [DonationRecordController::class, 'update']);
     Route::delete('/donations/{id}', [DonationRecordController::class, 'destroy']);
@@ -68,6 +69,7 @@ Route::middleware('auth.jwt')->group(function () {
 
     Route::put('/profile', [ProfileController::class, 'update']);
     Route::post('/profile/qris', [ProfileController::class, 'uploadQris']);
+    Route::get('/profile', [ProfileController::class, 'index']);
 
     /*
     |--------------------------------------------------------------------------

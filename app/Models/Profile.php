@@ -26,10 +26,8 @@ class Profile extends Model
 
     public function getQrisUrlAttribute()
     {
-        if (!$this->qris_code) {
-            return null;
-        }
-
-        return Storage::url($this->qris_code);
+        return $this->qris_code
+            ? asset('storage/' . $this->qris_code)
+            : null;
     }
 }

@@ -13,10 +13,16 @@ class DonationRecordController extends Controller
     {
         $records = DonationRecord::with(['bankAccount'])->latest()->get();
 
-        $records->transform(function ($record) {
-            if ($record->payment_proof) {
-                $record->payment_proof = url(Storage::url($record->payment_proof));
-            }
+        $records->getCollection()->transform(function ($record) {
+            $record->payment_proof_url =
+                $record->payment_proof
+                    ? url(
+                        Storage::url(
+                            $record->payment_proof
+                        )
+                    )
+                    : null;
+
             return $record;
         });
 
