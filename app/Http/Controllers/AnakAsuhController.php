@@ -11,7 +11,11 @@ class AnakAsuhController extends Controller
     public function index()
     {
         $anakAsuh = AnakAsuh::all();
-        return response()->json($anakAsuh);
+        return response()->json([
+            'success' => true,
+            'message' => 'Daftar anak asuh berhasil diambil',
+            'data' => $anakAsuh,
+        ]);
     }
 
     public function store(Request $request)
