@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Profile extends Model
 {
@@ -20,14 +21,6 @@ class Profile extends Model
         'whatsapp_link',
         'Updated_at',
     ];
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::updating(function ($model) {
-            $model->Updated_at = now();
-        });
-    }
 
     protected $appends = ['qris_url'];
 

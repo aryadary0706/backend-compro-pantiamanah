@@ -11,9 +11,7 @@ class DonationRecordController extends Controller
 {
     public function index()
     {
-        $records = DonationRecord::with(['bankAccount'])
-            ->latest()
-            ->paginate(10);
+        $records = DonationRecord::with(['bankAccount'])->latest()->get();
 
         $records->getCollection()->transform(function ($record) {
             $record->payment_proof_url =
@@ -73,6 +71,10 @@ class DonationRecordController extends Controller
                 'success' => false,
                 'message' => 'Donation record tidak ditemukan'
             ], 404);
+        }
+
+        if ($record->payment_proof) {
+            $record->payment_proof = url(Storage::url($record->payment_proof));
         }
 
         return response()->json([
