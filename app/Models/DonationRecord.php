@@ -13,7 +13,7 @@ class DonationRecord extends Model
         'donor_name',
         'phone_number',
         'tujuan',
-        'donasi_id',
+        'payment_method',
         'bank_account_id',
         'amount',
         'payment_proof',

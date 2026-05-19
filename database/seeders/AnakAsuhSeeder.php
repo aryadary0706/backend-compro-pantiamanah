@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-namespace Database\Seeders;
-
 use Illuminate\Database\Seeder;
 use App\Models\AnakAsuh;
 
@@ -15,30 +13,36 @@ class AnakAsuhSeeder extends Seeder
             [
                 'name' => 'Budi Santoso',
                 'age' => 10,
-                'gender' => 'Laki-laki',
                 'tanggal_lahir' => '2014-05-15',
-                'education' => 'SD Negeri 01',
-                'badge' => 'Rajin',
+                'tempat_lahir' => 'Jakarta',
+                'gender' => 'Laki-laki',
+                'education' => 'SD',
+                'education_level' => 'Kelas 4',
+                'status' => 'Yatim',
                 'description' => 'Anak yang rajin membantu teman.',
                 'photo' => 'anak_asuh/test-image_anakasuh1.jpeg',
             ],
             [
                 'name' => 'Siti Aminah',
                 'age' => 12,
-                'gender' => 'Perempuan',
                 'tanggal_lahir' => '2012-08-20',
-                'education' => 'SMP IT Al-Ikhlas',
-                'badge' => 'Berprestasi',
+                'tempat_lahir' => 'Bandung',
+                'gender' => 'Perempuan',
+                'education' => 'SMP',
+                'education_level' => 'Kelas 7',
+                'status' => 'Dhuafa',
                 'description' => 'Juara lomba matematika tingkat kota.',
                 'photo' => 'anak_asuh/test-image-anakasuh2.jpeg',
             ],
             [
                 'name' => 'Andi Wijaya',
                 'age' => 8,
-                'gender' => 'Laki-laki',
                 'tanggal_lahir' => '2016-03-10',
-                'education' => 'SD Negeri 05',
-                'badge' => 'Kreatif',
+                'tempat_lahir' => 'Surabaya',
+                'gender' => 'Laki-laki',
+                'education' => 'SD',
+                'education_level' => 'Kelas 2',
+                'status' => 'Piatu',
                 'description' => 'Suka menggambar dan mewarnai.',
             ],
         ];

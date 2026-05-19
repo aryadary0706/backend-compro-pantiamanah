@@ -14,11 +14,8 @@ return new class extends Migration
         Schema::create('profiles', function (Blueprint $table) {
             $table->id();
             $table->string('email');
-            $table->string('email_information')->nullable();
             $table->string('phone_number');
             $table->string('Whatsapp_number');
-            $table->text('contact_information')->nullable();
-            $table->text('Operational_information')->nullable();
             $table->text('qris_code')->nullable();
             $table->string('whatsapp_link')->nullable();
             $table->timestamps();

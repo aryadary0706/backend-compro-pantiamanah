@@ -16,9 +16,11 @@ return new class extends Migration
             $table->string('name');
             $table->integer('age');
             $table->date('tanggal_lahir');
+            $table->string('tempat_lahir');
             $table->enum('gender', ['Laki-laki', 'Perempuan']);
-            $table->string('education');
-            $table->string('badge')->nullable();
+            $table->enum('education', ['Tidak Sekolah', 'TK', 'SD', 'SMP', 'SMA', 'Kuliah']);
+            $table->string('education_level');
+            $table->enum('status', ['Dhuafa', 'Yatim', 'Piatu']);
             $table->text('description')->nullable();
             $table->string('photo')->nullable();
             $table->timestamps();

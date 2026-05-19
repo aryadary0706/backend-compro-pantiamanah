@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Program;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 class ProgramController extends Controller
@@ -41,9 +42,18 @@ class ProgramController extends Controller
             $validated = $request->validate([
                 'title' => 'required|string|max:255',
                 'description' => 'required|string',
+                'images' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+                'date' => 'required|date',
+                'location' => 'required|string|max:255',
+                'time' => 'required'
             ]);
 
-            $program = Program::create($validated);
+            $data = $validated;
+            if ($request->hasFile('images')) {
+                $data['images'] = $request->file('images')->store('programs', 'public');
+            }
+
+            $program = Program::create($data);
 
             return response()->json([
                 'success' => true,
@@ -55,7 +65,7 @@ class ProgramController extends Controller
         } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Title dan description wajib diisi',
+                'message' => 'Validasi gagal',
                 'data' => null,
                 'errors' => $e->errors()
             ], 422);
@@ -82,9 +92,21 @@ class ProgramController extends Controller
             $validated = $request->validate([
                 'title' => 'required|string|max:255',
                 'description' => 'required|string',
+                'images' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+                'date' => 'nullable|date',
+                'location' => 'nullable|string|max:255',
+                'time' => 'nullable'
             ]);
 
-            $program->update($validated);
+            $data = $validated;
+            if ($request->hasFile('images')) {
+                if ($program->images) {
+                    Storage::disk('public')->delete($program->images);
+                }
+                $data['images'] = $request->file('images')->store('programs', 'public');
+            }
+
+            $program->update($data);
 
             return response()->json([
                 'success' => true,
@@ -96,7 +118,7 @@ class ProgramController extends Controller
         } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Title dan description tidak boleh kosong',
+                'message' => 'Validasi gagal',
                 'data' => null,
                 'errors' => $e->errors()
             ], 422);
@@ -117,6 +139,10 @@ class ProgramController extends Controller
                 'data' => null,
                 'errors' => null
             ], 404);
+        }
+
+        if ($program->images) {
+            Storage::disk('public')->delete($program->images);
         }
 
         $program->delete();

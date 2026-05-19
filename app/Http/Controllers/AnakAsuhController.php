@@ -21,14 +21,16 @@ class AnakAsuhController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name'        => 'required|string|max:255',
-            'age'         => 'required|integer',
-            'tanggal_lahir' => 'required|date',
-            'gender'      => 'required|in:Laki-laki,Perempuan',
-            'education'   => 'required|string',
-            'badge'       => 'nullable|string',
-            'description' => 'nullable|string',
-            'photo'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'name'            => 'required|string|max:255',
+            'age'             => 'required|integer',
+            'tanggal_lahir'   => 'required|date',
+            'tempat_lahir'    => 'required|string|max:255',
+            'gender'          => 'required|in:Laki-laki,Perempuan',
+            'education'       => 'required|in:Tidak Sekolah,TK,SD,SMP,SMA,Kuliah',
+            'education_level' => 'required|string|max:255',
+            'status'          => 'required|in:Dhuafa,Yatim,Piatu',
+            'description'     => 'nullable|string',
+            'photo'           => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         if ($request->hasFile('photo')) {
@@ -44,14 +46,16 @@ class AnakAsuhController extends Controller
         $anakAsuh = AnakAsuh::findOrFail($id);
 
         $validated = $request->validate([
-            'name'        => 'sometimes|string|max:255',
-            'age'         => 'sometimes|integer',
-            'tanggal_lahir' => 'sometimes|date',
-            'gender'      => 'sometimes|in:Laki-laki,Perempuan',
-            'education'   => 'sometimes|string',
-            'badge'       => 'nullable|string',
-            'description' => 'nullable|string',
-            'photo'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'name'            => 'sometimes|string|max:255',
+            'age'             => 'sometimes|integer',
+            'tanggal_lahir'   => 'sometimes|date',
+            'tempat_lahir'    => 'sometimes|string|max:255',
+            'gender'          => 'sometimes|in:Laki-laki,Perempuan',
+            'education'       => 'sometimes|in:Tidak Sekolah,TK,SD,SMP,SMA,Kuliah',
+            'education_level' => 'sometimes|string|max:255',
+            'status'          => 'sometimes|in:Dhuafa,Yatim,Piatu',
+            'description'     => 'nullable|string',
+            'photo'           => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
         if ($request->hasFile('photo')) {
             if ($anakAsuh->photo) {

@@ -16,9 +16,10 @@ return new class extends Migration
             $table->string('donor_name');
             $table->string('phone_number');
             $table->string('tujuan');
-            $table->foreignId('bank_account_id')->constrained('bank_accounts')->restrictOnDelete();
+            $table->enum('payment_method', ['bank_transfer', 'cash', 'qris', 'other']);
+            $table->foreignId('bank_account_id')->nullable()->constrained('bank_accounts')->nullOnDelete();
             $table->decimal('amount', 15, 2);
-            $table->string('payment_proof');
+            $table->string('payment_proof')->nullable();
             $table->timestamps();
         });
     }

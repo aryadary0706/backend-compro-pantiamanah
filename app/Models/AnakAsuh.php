@@ -17,9 +17,11 @@ class AnakAsuh extends Model
         'name',
         'age',
         'tanggal_lahir',
+        'tempat_lahir',
         'gender',
         'education',
-        'badge',
+        'education_level',
+        'status',
         'description',
         'photo',
     ];

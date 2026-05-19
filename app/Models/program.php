@@ -11,6 +11,10 @@ class program extends Model
 
     protected $fillable = [
         'title',
-        'description'
+        'description',
+        'images',
+        'date',
+        'location',
+        'time'
     ];
 }

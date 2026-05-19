@@ -10,7 +10,6 @@ use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\DonationRecordController;
 
-Route::post('/login', [AuthController::class, 'login']);
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +17,7 @@ Route::post('/login', [AuthController::class, 'login']);
 |--------------------------------------------------------------------------
 */
 
+Route::post('/login', [AuthController::class, 'login']);
 Route::get('/profile', [ProfileController::class, 'index']);
 Route::get('/anak-asuh', [AnakAsuhController::class, 'index']);
 Route::get('/locations', [LocationController::class, 'index']);

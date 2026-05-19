@@ -33,18 +33,19 @@ class DonationRecordController extends Controller
             'donor_name' => 'required|string|max:255',
             'phone_number' => 'required|string|max:20',
             'tujuan' => 'required|string|max:255',
-            'bank_account_id' => 'required|exists:bank_accounts,id',
+            'payment_method' => 'required|in:bank_transfer,cash,qris,other',
+            'bank_account_id' => 'required_if:payment_method,bank_transfer|nullable|exists:bank_accounts,id',
             'amount' => 'required|numeric|min:1000',
-            'payment_proof' => 'required|image|max:2048',
+            'payment_proof' => 'required_if:payment_method,bank_transfer|nullable|image|max:2048',
         ]);
 
         if ($request->hasFile('payment_proof')) {
             $data['payment_proof'] =
                 $request->file('payment_proof')
-                    ->store(
-                        'payment_proofs',
-                        'public'
-                    );
+                ->store(
+                    'payment_proofs',
+                    'public'
+                );
         }
 
         $record = DonationRecord::create($data);
@@ -111,9 +112,22 @@ class DonationRecordController extends Controller
             'donor_name' => 'required|string|max:255',
             'phone_number' => 'required|string|max:20',
             'tujuan' => 'required|string|max:255',
-            'bank_account_id' => 'required|exists:bank_accounts,id',
+            'payment_method' => 'required|in:bank_transfer,cash,qris,other',
+            'bank_account_id' => 'nullable|exists:bank_accounts,id',
+            'payment_proof' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'amount' => 'required|numeric|min:1000',
         ]);
+
+        if ($request->hasFile('payment_proof')) {
+            // Hapus file lama
+            if ($record->payment_proof && Storage::exists($record->payment_proof)) {
+                Storage::delete($record->payment_proof);
+            }
+            $data['payment_proof'] = $request->file('payment_proof')->store('payment_proofs', 'public');
+        } else {
+            // Jangan overwrite payment_proof jika tidak ada file baru
+            unset($data['payment_proof']);
+        }
 
         $record->update($data);
 
