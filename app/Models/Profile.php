@@ -12,10 +12,8 @@ class Profile extends Model
 
     protected $fillable = [
         'email',
-        'email_information',
         'phone_number',
         'Whatsapp_number',
-        'contact_information',
         'Operational_information',
         'qris_code',
         'whatsapp_link',

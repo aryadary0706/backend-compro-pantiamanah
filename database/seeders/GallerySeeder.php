@@ -15,13 +15,8 @@ class GallerySeeder extends Seeder
     {
         $data = [
             [
-                'title' => 'Kegiatan Anak',
-                'image_path' => 'galleries/foto_gabut.jpeg',
-                'uploaded_at' => now(),
-            ],
-            [
-                'title' => 'Kegiatan Anak',
-                'image_path' => 'galleries/foto_gabut2.jpeg',
+                'title' => 'Demo Presentasi website PSAA Amanah',
+                'image_path' => 'galleries/foto_1.jpeg',
                 'uploaded_at' => now(),
             ],
         ];
