@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('tanggal_lahir');
             $table->string('tempat_lahir');
             $table->enum('gender', ['Laki-laki', 'Perempuan']);
-            $table->enum('education', ['Tidak Sekolah', 'TK', 'SD', 'SMP', 'SMA', 'Kuliah']);
+            $table->enum('education', ['Tidak Sekolah', 'TK', 'SD', 'SMP', 'SMK', 'SMA', 'Kuliah']);
             $table->string('education_level');
             $table->enum('status', ['Dhuafa', 'Yatim', 'Piatu']);
             $table->text('description')->nullable();
