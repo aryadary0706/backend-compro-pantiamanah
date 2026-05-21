@@ -43,9 +43,9 @@ class ProgramController extends Controller
                 'title' => 'required|string|max:255',
                 'description' => 'required|string',
                 'images' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-                'date' => 'required|date',
-                'location' => 'required|string|max:255',
-                'time' => 'required'
+                'date' => 'nullable|date',
+                'location' => 'nullable|string|max:255',
+                'time' => 'nullable'
             ]);
 
             $data = $validated;
@@ -71,7 +71,7 @@ class ProgramController extends Controller
             ], 422);
         }
     }
-    
+
     /**
      * UPDATE - Perbarui program
      */

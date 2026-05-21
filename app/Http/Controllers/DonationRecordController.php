@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DonationRecord;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use \Illuminate\Validation\ValidationException;
 
 class DonationRecordController extends Controller
 {
@@ -13,16 +14,28 @@ class DonationRecordController extends Controller
     {
         $records = DonationRecord::with(['bankAccount'])->latest()->get();
 
-        $records->getCollection()->transform(function ($record) {
-            $record->payment_proof_url =
-                $record->payment_proof
-                    ? url(
-                        Storage::url(
-                            $record->payment_proof
-                        )
-                    )
-                    : null;
+        $records->transform(function ($record) {
+            if ($record->payment_proof) {
+                $record->payment_proof = Storage::disk('public')->url($record->payment_proof);
+            }
+            return $record;
+        });
 
+        return response()->json([
+            'success' => true,
+            'message' => 'List donation records',
+            'data' => $records
+        ]);
+    }
+
+    public function pagination(Request $request)
+    {
+        $records = DonationRecord::with(['bankAccount'])->latest()->paginate(4);
+
+        $records->getCollection()->transform(function ($record) {
+            if ($record->payment_proof) {
+                $record->payment_proof = Storage::disk('public')->url($record->payment_proof);
+            }
             return $record;
         });
 
@@ -35,32 +48,36 @@ class DonationRecordController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'donor_name' => 'required|string|max:255',
-            'phone_number' => 'required|string|max:20',
-            'tujuan' => 'required|string|max:255',
-            'payment_method' => 'required|in:bank_transfer,cash,qris,other',
-            'bank_account_id' => 'required_if:payment_method,bank_transfer|nullable|exists:bank_accounts,id',
-            'amount' => 'required|numeric|min:1000',
-            'payment_proof' => 'required_if:payment_method,bank_transfer|nullable|image|max:2048',
-        ]);
+        try {
+            $data = $request->validate([
+                'donor_name' => 'required|string|max:255',
+                'phone_number' => 'required|string|max:20',
+                'tujuan' => 'required|string|max:255',
+                'payment_method' => 'required|in:bank_transfer,cash,qris,other',
+                'bank_account_id' => 'required_if:payment_method,bank_transfer|nullable|exists:bank_accounts,id',
+                'amount' => 'required|numeric|min:1000',
+                'payment_proof' => 'required_if:payment_method,bank_transfer|nullable|image|mimes:jpg,jpeg,png|max:2048',
+            ]);
 
-        if ($request->hasFile('payment_proof')) {
-            $data['payment_proof'] =
-                $request->file('payment_proof')
-                ->store(
-                    'payment_proofs',
-                    'public'
-                );
+            $path = $request->file('payment_proof')->store('payment_proofs', 'public');
+
+            $data['payment_proof'] = $path;
+
+            $record = DonationRecord::create($data);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Donasi berhasil dicatat, menunggu verifikasi admin',
+                'data' => $record
+            ], 201);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'data' => null,
+                'errors' => $e->errors()
+            ], 422);
         }
-
-        $record = DonationRecord::create($data);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Donasi berhasil dicatat, menunggu verifikasi admin',
-            'data' => $record
-        ], 201);
     }
 
     public function show($id)
@@ -75,7 +92,7 @@ class DonationRecordController extends Controller
         }
 
         if ($record->payment_proof) {
-            $record->payment_proof = url(Storage::url($record->payment_proof));
+            $record->payment_proof = Storage::disk('public')->url($record->payment_proof);
         }
 
         return response()->json([
@@ -88,10 +105,9 @@ class DonationRecordController extends Controller
     public function destroy($id)
     {
         $record = DonationRecord::findOrFail($id);
-        if ($record->payment_proof) {
 
-            Storage::disk('public')
-                ->delete($record->payment_proof);
+        if ($record->payment_proof && Storage::disk('public')->exists($record->payment_proof)) {
+            Storage::disk('public')->delete($record->payment_proof);
         }
 
         $record->delete();
@@ -120,18 +136,17 @@ class DonationRecordController extends Controller
             'tujuan' => 'required|string|max:255',
             'payment_method' => 'required|in:bank_transfer,cash,qris,other',
             'bank_account_id' => 'nullable|exists:bank_accounts,id',
-            'payment_proof' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'payment_proof' => 'nullable|image|mimes:jpg,jpeg,png,pdf|max:2048',
             'amount' => 'required|numeric|min:1000',
         ]);
 
         if ($request->hasFile('payment_proof')) {
-            // Hapus file lama
-            if ($record->payment_proof && Storage::exists($record->payment_proof)) {
-                Storage::delete($record->payment_proof);
+            if ($record->payment_proof && Storage::disk('public')->exists($record->payment_proof)) {
+                Storage::disk('public')->delete($record->payment_proof);
             }
             $data['payment_proof'] = $request->file('payment_proof')->store('payment_proofs', 'public');
         } else {
-            // Jangan overwrite payment_proof jika tidak ada file baru
+
             unset($data['payment_proof']);
         }
 

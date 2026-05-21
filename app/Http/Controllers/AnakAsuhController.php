@@ -18,6 +18,22 @@ class AnakAsuhController extends Controller
         ]);
     }
 
+    public function pagination(Request $request)
+    {
+        $query = AnakAsuh::latest();
+
+        if ($request->has('name') && $request->filled('name')) {
+            $query->where('name', 'like', '%' . $request->input('name') . '%');
+        }
+
+        $anakAsuh = $query->paginate(6);
+        return response()->json([
+            'success' => true,
+            'message' => 'Daftar anak asuh berhasil diambil',
+            'data' => $anakAsuh,
+        ]);
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([

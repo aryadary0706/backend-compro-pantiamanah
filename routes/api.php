@@ -25,8 +25,9 @@ Route::get('/programs', [ProgramController::class, 'index']);
 Route::get('/bank-accounts', [BankAccountController::class, 'index']);
 Route::get('/galleries', [GalleryController::class, 'index']);
 Route::get('/donations', [DonationRecordController::class, 'index']);
+Route::get('/donations/pagination', [DonationRecordController::class, 'pagination']);
 Route::get('/donations/{id}', [DonationRecordController::class, 'show']);
-
+Route::get('/anak-asuh/pagination', [AnakAsuhController::class, 'pagination']);
 
 /*
 |--------------------------------------------------------------------------
@@ -45,11 +46,10 @@ Route::middleware('auth.jwt')->group(function () {
     | DONATIONS
     |--------------------------------------------------------------------------
     */
-    Route::get('/donations',[DonationRecordController::class, 'index']);
-    Route::get('/donations/{id}',[DonationRecordController::class, 'show']);
+
     Route::post('/donations', [DonationRecordController::class, 'store']);
-    Route::put('/donations/{id}', [DonationRecordController::class, 'update']);
     Route::delete('/donations/{id}', [DonationRecordController::class, 'destroy']);
+    Route::put('/donations/{id}', [DonationRecordController::class, 'update']);
 
     /*
     |--------------------------------------------------------------------------
@@ -69,13 +69,13 @@ Route::middleware('auth.jwt')->group(function () {
 
     Route::put('/profile', [ProfileController::class, 'update']);
     Route::post('/profile/qris', [ProfileController::class, 'uploadQris']);
-    Route::get('/profile', [ProfileController::class, 'index']);
 
     /*
     |--------------------------------------------------------------------------
     | ANAK ASUH
     |--------------------------------------------------------------------------
     */
+
     Route::post('/anak-asuh', [AnakAsuhController::class, 'store']);
     Route::put('/anak-asuh/{id}', [AnakAsuhController::class, 'update']);
     Route::delete('/anak-asuh/{id}', [AnakAsuhController::class, 'destroy']);
@@ -95,8 +95,8 @@ Route::middleware('auth.jwt')->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::post('/galleries', [GalleryController::class, 'store']);
-    Route::delete('/galleries/{id}', [GalleryController::class, 'destroy']);
     Route::put('/galleries/{id}', [GalleryController::class, 'update']);
+    Route::delete('/galleries/{id}', [GalleryController::class, 'destroy']);
 
     /*
     |--------------------------------------------------------------------------
