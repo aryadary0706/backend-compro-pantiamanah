@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('email');
             $table->string('phone_number');
-            $table->string('Whatsapp_number');
+            $table->string('whatsapp_number');
             $table->string('qris_code')->nullable();
             $table->string('whatsapp_link')->nullable();
             $table->timestamps();

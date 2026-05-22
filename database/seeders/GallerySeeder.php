@@ -13,16 +13,16 @@ class GallerySeeder extends Seeder
      */
     public function run(): void
     {
-        $data = [
-            [
-                'title' => 'Demo Presentasi website PSAA Amanah',
-                'image_path' => 'galleries/foto_1.jpeg',
-                'uploaded_at' => now(),
-            ],
-        ];
+        // $data = [
+        //     [
+        //         'title' => 'Demo Presentasi website PSAA Amanah',
+        //         'image_path' => 'galleries/foto_1.jpeg',
+        //         'uploaded_at' => now(),
+        //     ],
+        // ];
 
-        foreach ($data as $item) {
-            Gallery::create($item);
-        }
+        // foreach ($data as $item) {
+        //     Gallery::create($item);
+        // }
     }
 }

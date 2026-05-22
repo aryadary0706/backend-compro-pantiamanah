@@ -1,9 +1,12 @@
 <?php
+
 namespace App\Http\Controllers;
+
 use App\Models\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class ProfileController extends Controller
 {
@@ -20,26 +23,40 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        $profile = Profile::first();
+        try {
+            $profile = Profile::first();
 
-        // Kalau belum ada data sama sekali, return 404
-        if (!$profile) {
+            if (!$profile) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data profil belum dikonfigurasi.',
+                    'data' => null,
+                    'errors' => null,
+                ], 404);
+            }
+
+            $data = $profile->toArray();
+
+            if ($profile->qris_code) {
+                $rawPath = $profile->getRawOriginal('qris_code');
+                $data['qris_url'] = asset('storage/' . $rawPath);
+            }
+
             return response()->json([
-                'status' => 'error',
-                'message' => 'Data profil belum dikonfigurasi.',
-            ], 404);
-        }
+                'success' => true,
+                'message' => 'Data profil berhasil diambil.',
+                'data' => $data,
+                'errors' => null,
+            ], 200);
 
-        $data = $profile->toArray();
-        if ($profile->qris_code) {
-            $rawPath = $profile->getRawOriginal('qris_code');
-            $data['qris_url'] = asset('storage/' . $rawPath);
+        } catch (Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengambil data profil.',
+                'data' => null,
+                'errors' => $e->getMessage(),
+            ], 500);
         }
-
-        return response()->json([
-            'status' => 'success',
-            'data' => $data
-        ]);
     }
 
     /**
@@ -47,37 +64,43 @@ class ProfileController extends Controller
      */
     public function update(Request $request)
     {
-        $validator = Validator::make($request->all(), [ 
-            'email'                   => 'required|email|max:255',
-            'email_information'       => 'nullable|string',
-            'phone_number'            => 'required|string|max:20',
-            'Whatsapp_number'         => 'required|string',
-            'contact_information'     => 'nullable|string',
-            'Operational_information' => 'nullable|string',
-            'whatsapp_link'           => 'nullable|url',
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|max:255',
+            'phone_number' => 'required|string|max:20',
+            'whatsapp_number' => 'required|string',  // fix: huruf kecil
+            'whatsapp_link' => 'nullable|url',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => 'error',
-                'errors' => $validator->errors()
+                'success' => false,
+                'message' => 'Validasi gagal.',
+                'data' => null,
+                'errors' => $validator->errors(),
             ], 422);
         }
 
         try {
             $profile = $this->getProfile();
-            $profile->fill($request->except(['qris_code']));
+
+            // fix: exclude 'qris_file' (nama field upload), bukan 'qris_code'
+            // agar kolom qris_code tidak bisa ditimpa lewat body teks
+            $profile->fill($request->except(['qris_file']));
             $profile->save();
 
             return response()->json([
-                'status'  => 'success',
-                'message' => 'Profile berhasil diperbarui',
-                'data'    => $profile
-            ]);
-        } catch (\Exception $e) {
+                'success' => true,
+                'message' => 'Profil berhasil diperbarui.',
+                'data' => $profile->fresh(),
+                'errors' => null,
+            ], 200);
+
+        } catch (Throwable $e) {
             return response()->json([
-                'status'  => 'error',
-                'message' => 'Gagal menyimpan profile: ' . $e->getMessage()
+                'success' => false,
+                'message' => 'Gagal menyimpan profil.',
+                'data' => null,
+                'errors' => $e->getMessage(),
             ], 500);
         }
     }
@@ -88,13 +111,15 @@ class ProfileController extends Controller
     public function uploadQris(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'qris_file' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'qris_code' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => 'error',
-                'errors' => $validator->errors()
+                'success' => false,
+                'message' => 'Validasi gagal.',
+                'data' => null,
+                'errors' => $validator->errors(),
             ], 422);
         }
 
@@ -108,21 +133,25 @@ class ProfileController extends Controller
                 }
             }
 
-            $path = $request->file('qris_file')->store('qris', 'public');
+            $path = $request->file('qris_code')->store('qris', 'public');
             $profile->qris_code = $path;
             $profile->save();
 
             return response()->json([
-                'status'  => 'success',
-                'message' => 'QRIS berhasil diperbarui',
-                'data'    => array_merge($profile->toArray(), [
-                    'qris_url' => asset('storage/' . $path)
-                ])
-            ]);
-        } catch (\Exception $e) {
+                'success' => true,
+                'message' => 'QRIS berhasil diperbarui.',
+                'data' => array_merge($profile->toArray(), [
+                    'qris_url' => asset('storage/' . $path),
+                ]),
+                'errors' => null,
+            ], 200);
+
+        } catch (Throwable $e) {
             return response()->json([
-                'status'  => 'error',
-                'message' => 'Gagal mengupload QRIS: ' . $e->getMessage()
+                'success' => false,
+                'message' => 'Gagal mengupload QRIS.',
+                'data' => null,
+                'errors' => $e->getMessage(),
             ], 500);
         }
     }

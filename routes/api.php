@@ -105,5 +105,6 @@ Route::middleware('auth.jwt')->group(function () {
     */
     Route::post('/programs', [ProgramController::class, 'store']);
     Route::put('/programs/{id}', [ProgramController::class, 'update']);
+    Route::post('/programs/{id}', [ProgramController::class, 'update']);
     Route::delete('/programs/{id}', [ProgramController::class, 'destroy']);
 });

@@ -95,9 +95,9 @@ class GalleryController extends Controller
         ]);
     }
 
-        /**
-        * UPDATE - Update gallery
-        */
+    /**
+     * UPDATE - Update gallery
+     */
     public function update(Request $request, $id)
     {
         $gallery = Gallery::find($id);
