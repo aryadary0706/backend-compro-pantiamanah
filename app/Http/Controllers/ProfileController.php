@@ -67,8 +67,9 @@ class ProfileController extends Controller
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|max:255',
             'phone_number' => 'required|string|max:20',
-            'whatsapp_number' => 'required|string',  // fix: huruf kecil
+            'whatsapp_number' => 'required|string',
             'whatsapp_link' => 'nullable|url',
+            'instagram' => 'nullable|url',
         ]);
 
         if ($validator->fails()) {

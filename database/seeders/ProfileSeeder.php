@@ -17,6 +17,7 @@ class ProfileSeeder extends Seeder
             'phone_number' => '02212345678',
             'whatsapp_number' => '08156209910',
             'whatsapp_link' => 'https://wa.me/08156209910',
+            'instagram' => 'panti.amanah',
             'qris_code' => 'qris/qris_panti_amanah.png',
             'updated_at' => now(),
         ]);

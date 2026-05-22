@@ -28,7 +28,7 @@ class ProgramUpdateRequest extends FormRequest
             'images' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'date' => 'nullable|date',
             'location' => 'nullable|string|max:255',
-            'time' => 'nullable|date_format:H:i:s',
+            'time' => 'nullable|date_format:H:i',
         ];
     }
 }

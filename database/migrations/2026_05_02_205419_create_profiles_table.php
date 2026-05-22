@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('whatsapp_number');
             $table->string('qris_code')->nullable();
             $table->string('whatsapp_link')->nullable();
+            $table->string('instagram')->nullable();    
             $table->timestamps();
         });
     }
