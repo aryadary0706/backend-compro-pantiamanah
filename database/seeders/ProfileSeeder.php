@@ -13,6 +13,9 @@ class ProfileSeeder extends Seeder
     public function run(): void
     {
         Profile::create([
+            'ketua_yayasan' => 'Ir. Budi Santoso',
+            'tahun_periode' => '2026-2029',
+            'profil_text' => 'Panti Asuhan Amanah adalah sebuah lembaga sosial yang berkomitmen memberikan pendidikan, kesehatan, dan perlindungan bagi anak-anak kurang mampu di Indonesia.',
             'email' => 'amanahpanti@gmail.com',
             'phone_number' => '02212345678',
             'whatsapp_number' => '08156209910',

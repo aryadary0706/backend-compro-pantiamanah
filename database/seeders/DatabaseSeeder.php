@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
             ProgramSeeder::class,
             BankAccountSeeder::class,
             // DonationRecordSeeder::class,
-            GallerySeeder::class,
+            // GallerySeeder::class,
         ]);
     }
 }

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('profiles', function (Blueprint $table) {
             $table->id();
             $table->string('ketua_yayasan');
-            $table->int('tahun_periode');
+            $table->string('tahun_periode');
             $table->string('profil_text');
             $table->string('email');
             $table->string('phone_number');

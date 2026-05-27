@@ -66,7 +66,7 @@ class ProfileController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'ketua_yayasan' => 'required|string|max:255',
-            'tahun_periode' => 'required|integer',
+            'tahun_periode' => 'required|string|max:255',
             'profil_text' => 'required|string',
             'email' => 'required|email|max:255',
             'phone_number' => 'required|string|max:20',
@@ -112,7 +112,7 @@ class ProfileController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'ketua_yayasan' => 'sometimes|string|max:255',
-            'tahun_periode' => 'sometimes|integer',
+            'tahun_periode' => 'sometimes|string|max:255',
             'profil_text' => 'sometimes|string',
             'email' => 'sometimes|email|max:255',
             'phone_number' => 'sometimes|string|max:20',
