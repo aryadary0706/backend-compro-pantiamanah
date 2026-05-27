@@ -60,16 +60,66 @@ class ProfileController extends Controller
     }
 
     /**
+     * CREATE - Create data profile
+     */
+    public function create(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'ketua_yayasan' => 'required|string|max:255',
+            'tahun_periode' => 'required|integer',
+            'profil_text' => 'required|string',
+            'email' => 'required|email|max:255',
+            'phone_number' => 'required|string|max:20',
+            'whatsapp_number' => 'required|string|max:20',
+            'qris_code' => 'nullable|string',
+            'whatsapp_link' => 'nullable|url',
+            'instagram' => 'nullable|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal.',
+                'data' => null,
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        try {
+            $profile = Profile::create($request->validated());
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Profil berhasil dibuat.',
+                'data' => $profile,
+                'errors' => null,
+            ], 201);
+
+        } catch (Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal membuat profil.',
+                'data' => null,
+                'errors' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
      * UPDATE - Update data profile (Fokus pada Teks)
      */
     public function update(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email|max:255',
-            'phone_number' => 'required|string|max:20',
-            'whatsapp_number' => 'required|string',
-            'whatsapp_link' => 'nullable|url',
-            'instagram' => 'nullable|url',
+            'ketua_yayasan' => 'sometimes|string|max:255',
+            'tahun_periode' => 'sometimes|integer',
+            'profil_text' => 'sometimes|string',
+            'email' => 'sometimes|email|max:255',
+            'phone_number' => 'sometimes|string|max:20',
+            'whatsapp_number' => 'sometimes|string|max:20',
+            'qris_code' => 'nullable|string',
+            'whatsapp_link' => 'sometimes|url',
+            'instagram' => 'sometimes|string|max:255',
         ]);
 
         if ($validator->fails()) {

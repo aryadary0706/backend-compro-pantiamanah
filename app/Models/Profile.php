@@ -11,12 +11,16 @@ class Profile extends Model
     use HasFactory;
 
     protected $fillable = [
+        'ketua_yayasan',
+        'tahun_periode',
+        'profil_text',
         'email',
         'phone_number',
         'Whatsapp_number',
         'Operational_information',
         'qris_code',
         'whatsapp_link',
+        'instagram',
         'Updated_at',
     ];
 

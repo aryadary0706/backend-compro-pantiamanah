@@ -25,10 +25,10 @@ class ProgramUpdateRequest extends FormRequest
         return [
             'title' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
-            'images' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'date' => 'nullable|date',
-            'location' => 'nullable|string|max:255',
-            'time' => 'nullable|date_format:H:i',
+            'images' => 'sometimes|image|mimes:jpg,jpeg,png|max:2048',
+            'date' => 'sometimes|date',
+            'location' => 'sometimes|string|max:255',
+            'time' => 'sometimes|date_format:H:i',
         ];
     }
 }

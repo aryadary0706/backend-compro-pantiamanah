@@ -67,6 +67,7 @@ Route::middleware('auth.jwt')->group(function () {
     |--------------------------------------------------------------------------
     */
 
+    Route::post('/profile', [ProfileController::class, 'create']);
     Route::put('/profile', [ProfileController::class, 'update']);
     Route::post('/profile/qris', [ProfileController::class, 'uploadQris']);
 
