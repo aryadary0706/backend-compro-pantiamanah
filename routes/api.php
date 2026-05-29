@@ -25,6 +25,7 @@ Route::get('/programs', [ProgramController::class, 'index']);
 Route::get('/programs/{id}', [ProgramController::class, 'show']);
 Route::get('/bank-accounts', [BankAccountController::class, 'index']);
 Route::get('/galleries', [GalleryController::class, 'index']);
+Route::get('/galleries/{id}', [GalleryController::class, 'show']);
 Route::get('/donations', [DonationRecordController::class, 'index']);
 Route::get('/donations/pagination', [DonationRecordController::class, 'pagination']);
 Route::get('/donations/{id}', [DonationRecordController::class, 'show']);

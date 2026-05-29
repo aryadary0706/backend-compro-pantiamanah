@@ -6,6 +6,7 @@ use App\Models\Gallery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use \Illuminate\Validation\ValidationException;
+use Throwable;
 
 class GalleryController extends Controller
 {
@@ -66,6 +67,39 @@ class GalleryController extends Controller
                 'data' => null,
                 'errors' => $e->errors()
             ], 422);
+        }
+    }
+
+    /**
+     * READ - Ambil satu program by ID
+     */
+    public function show($id)
+    {
+        try {
+            $program = Gallery::find($id);
+
+            if (! $program) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Program tidak ditemukan',
+                    'data'    => null,
+                    'errors'  => null,
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Detail program berhasil diambil',
+                'data'    => $program,
+                'errors'  => null,
+            ], 200);
+        } catch (Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengambil detail program',
+                'data'    => null,
+                'errors'  => $e->getMessage(),
+            ], 500);
         }
     }
 
