@@ -35,7 +35,6 @@ class ProgramController extends Controller
                 'data'    => $programs,
                 'errors'  => null,
             ], 200);
-
         } catch (Throwable $e) {
             return response()->json([
                 'success' => false,
@@ -66,7 +65,6 @@ class ProgramController extends Controller
                 'data'    => $program,
                 'errors'  => null,
             ], 201);
-
         } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
@@ -74,11 +72,43 @@ class ProgramController extends Controller
                 'data'    => null,
                 'errors'  => $e->errors(),
             ], 422);
-
         } catch (Throwable $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Gagal membuat program',
+                'data'    => null,
+                'errors'  => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * READ - Ambil satu program by ID
+     */
+    public function show($id)
+    {
+        try {
+            $program = Program::find($id);
+
+            if (! $program) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Program tidak ditemukan',
+                    'data'    => null,
+                    'errors'  => null,
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Detail program berhasil diambil',
+                'data'    => $program,
+                'errors'  => null,
+            ], 200);
+        } catch (Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengambil detail program',
                 'data'    => null,
                 'errors'  => $e->getMessage(),
             ], 500);
@@ -119,7 +149,6 @@ class ProgramController extends Controller
                 'data'    => $program->fresh(),
                 'errors'  => null,
             ], 200);
-
         } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
@@ -127,7 +156,6 @@ class ProgramController extends Controller
                 'data'    => null,
                 'errors'  => $e->errors(),
             ], 422);
-
         } catch (Throwable $e) {
             return response()->json([
                 'success' => false,
@@ -167,7 +195,6 @@ class ProgramController extends Controller
                 'data'    => null,
                 'errors'  => null,
             ], 200);
-
         } catch (Throwable $e) {
             return response()->json([
                 'success' => false,

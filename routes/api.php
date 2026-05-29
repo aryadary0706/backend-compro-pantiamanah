@@ -22,6 +22,7 @@ Route::get('/profile', [ProfileController::class, 'index']);
 Route::get('/anak-asuh', [AnakAsuhController::class, 'index']);
 Route::get('/locations', [LocationController::class, 'index']);
 Route::get('/programs', [ProgramController::class, 'index']);
+Route::get('/programs/{id}', [ProgramController::class, 'show']);
 Route::get('/bank-accounts', [BankAccountController::class, 'index']);
 Route::get('/galleries', [GalleryController::class, 'index']);
 Route::get('/donations', [DonationRecordController::class, 'index']);
