@@ -157,12 +157,13 @@ class ProfileController extends Controller
     }
 
     /**
-     * UPDATE - Upload / Ganti QRIS (Fokus pada File)
+     * UPDATE - Upload / Ganti / Hapus QRIS (Fokus pada File)
      */
     public function uploadQris(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'qris_code' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'qris_code' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
+            'remove_image' => 'sometimes|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -177,30 +178,59 @@ class ProfileController extends Controller
         try {
             $profile = $this->getProfile();
 
-            if ($profile->exists && $profile->qris_code) {
-                $oldPath = $profile->getRawOriginal('qris_code');
-                if ($oldPath && Storage::disk('public')->exists($oldPath)) {
-                    Storage::disk('public')->delete($oldPath);
+            if ($request->has('remove_image') && $request->remove_image == 1) {
+                if ($profile->exists && $profile->qris_code) {
+                    $oldPath = $profile->getRawOriginal('qris_code');
+                    if ($oldPath && Storage::disk('public')->exists($oldPath)) {
+                        Storage::disk('public')->delete($oldPath);
+                    }
                 }
+                $profile->qris_code = null;
+                $profile->save();
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'QRIS berhasil dihapus.',
+                    'data' => array_merge($profile->toArray(), [
+                        'qris_url' => null,
+                    ]),
+                    'errors' => null,
+                ], 200);
             }
 
-            $path = $request->file('qris_code')->store('qris', 'public');
-            $profile->qris_code = $path;
-            $profile->save();
+            if ($request->hasFile('qris_code')) {
+                if ($profile->exists && $profile->qris_code) {
+                    $oldPath = $profile->getRawOriginal('qris_code');
+                    if ($oldPath && Storage::disk('public')->exists($oldPath)) {
+                        Storage::disk('public')->delete($oldPath);
+                    }
+                }
 
+                $path = $request->file('qris_code')->store('qris', 'public');
+                $profile->qris_code = $path;
+                $profile->save();
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'QRIS berhasil diperbarui.',
+                    'data' => array_merge($profile->toArray(), [
+                        'qris_url' => asset('storage/' . $path),
+                    ]),
+                    'errors' => null,
+                ], 200);
+            }
+            
             return response()->json([
-                'success' => true,
-                'message' => 'QRIS berhasil diperbarui.',
-                'data' => array_merge($profile->toArray(), [
-                    'qris_url' => asset('storage/' . $path),
-                ]),
+                'success' => false,
+                'message' => 'Tidak ada file untuk diupload.',
+                'data' => null,
                 'errors' => null,
-            ], 200);
+            ], 400);
 
         } catch (Throwable $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal mengupload QRIS.',
+                'message' => 'Gagal memproses QRIS.',
                 'data' => null,
                 'errors' => $e->getMessage(),
             ], 500);

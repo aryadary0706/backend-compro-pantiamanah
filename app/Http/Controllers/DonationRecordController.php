@@ -168,7 +168,12 @@ class DonationRecordController extends Controller
 
             $data = $request->validated();
 
-            if ($request->hasFile('payment_proof')) {
+            if ($request->has('remove_image') && $request->remove_image == 1) {
+                if ($record->payment_proof && Storage::disk('public')->exists($record->payment_proof)) {
+                    Storage::disk('public')->delete($record->payment_proof);
+                }
+                $data['payment_proof'] = null;
+            } elseif ($request->hasFile('payment_proof')) {
                 if ($record->payment_proof && Storage::disk('public')->exists($record->payment_proof)) {
                     Storage::disk('public')->delete($record->payment_proof);
                 }

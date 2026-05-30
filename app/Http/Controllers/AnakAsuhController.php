@@ -94,7 +94,12 @@ class AnakAsuhController extends Controller
 
             $validated = $request->validated();
 
-            if ($request->hasFile('photo')) {
+            if ($request->has('remove_image') && $request->remove_image == 1) {
+                if ($anakAsuh->photo) {
+                    Storage::disk('public')->delete($anakAsuh->photo);
+                }
+                $validated['photo'] = null;
+            } elseif ($request->hasFile('photo')) {
                 if ($anakAsuh->photo) {
                     Storage::disk('public')->delete($anakAsuh->photo);
                 }

@@ -17,4 +17,11 @@ class program extends Model
         'location',
         'time'
     ];
+
+    protected $appends = ['image_url'];
+
+    public function getImageUrlAttribute()
+    {
+        return $this->images ? asset('storage/' . $this->images) : null;
+    }
 }

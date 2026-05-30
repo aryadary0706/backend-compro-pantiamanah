@@ -134,7 +134,12 @@ class ProgramController extends Controller
 
             $validated = $request->validated();
 
-            if ($request->hasFile('images')) {
+            if ($request->has('remove_image') && $request->remove_image == 1) {
+                if ($program->images) {
+                    Storage::disk('public')->delete($program->images);
+                }
+                $validated['images'] = null;
+            } elseif ($request->hasFile('images')) {
                 if ($program->images) {
                     Storage::disk('public')->delete($program->images);
                 }
