@@ -25,10 +25,17 @@ class ProgramStoreRequest extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'images' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'images' => 'nullable|image|mimes:jpg,jpeg,png|max:51200',
             'date' => 'nullable|date',
             'location' => 'nullable|string|max:255',
             'time' => 'nullable|date_format:H:i',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'images.max' => 'File gambar kebesaran',
         ];
     }
 }

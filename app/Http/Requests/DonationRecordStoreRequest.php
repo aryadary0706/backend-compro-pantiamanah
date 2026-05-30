@@ -23,7 +23,7 @@ class DonationRecordStoreRequest extends FormRequest
             'payment_method' => 'required|in:bank_transfer,cash,qris,other',
             'bank_account_id' => 'required_if:payment_method,bank_transfer|nullable|exists:bank_accounts,id',
             'amount'         => 'required|numeric|min:1000',
-            'payment_proof'  => 'required_if:payment_method,bank_transfer|nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'payment_proof'  => 'required_if:payment_method,bank_transfer|nullable|image|mimes:jpg,jpeg,png|max:51200',
         ];
     }
 
@@ -44,7 +44,7 @@ class DonationRecordStoreRequest extends FormRequest
             'payment_proof.required_if'        => 'Bukti pembayaran wajib diupload untuk transfer bank.',
             'payment_proof.image'              => 'Bukti pembayaran harus berupa gambar.',
             'payment_proof.mimes'              => 'Format bukti pembayaran harus jpg, jpeg, atau png.',
-            'payment_proof.max'                => 'Ukuran bukti pembayaran maksimal 2MB.',
+            'payment_proof.max'                => 'File gambar kebesaran',
         ];
     }
 

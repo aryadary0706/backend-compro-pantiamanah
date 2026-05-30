@@ -42,8 +42,10 @@ class GalleryController extends Controller
         try {
             $validated = $request->validate([
                 'title' => 'required|string|max:255',
-                'image' => 'required|image||max:2048',
+                'image' => 'required|image|max:51200',
                 'uploaded_at' => 'required|date',
+            ], [
+                'image.max' => 'File gambar kebesaran',
             ]);
 
             $path = $request->file('image')->store('galleries', 'public');
@@ -146,8 +148,10 @@ class GalleryController extends Controller
         try {
             $validated = $request->validate([
                 'title' => 'required|string|max:255',
-                'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+                'image' => 'nullable|image|mimes:jpg,jpeg,png|max:51200',
                 'uploaded_at' => 'required|date',
+            ], [
+                'image.max' => 'File gambar kebesaran',
             ]);
 
             if ($request->hasFile('image')) {

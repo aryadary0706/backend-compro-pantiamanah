@@ -25,10 +25,17 @@ class ProgramUpdateRequest extends FormRequest
         return [
             'title' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
-            'images' => 'sometimes|image|mimes:jpg,jpeg,png|max:2048',
+            'images' => 'sometimes|image|mimes:jpg,jpeg,png|max:51200',
             'date' => 'sometimes|date',
             'location' => 'sometimes|string|max:255',
             'time' => 'sometimes|date_format:H:i',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'images.max' => 'File gambar kebesaran',
         ];
     }
 }

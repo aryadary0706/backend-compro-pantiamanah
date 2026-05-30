@@ -25,7 +25,7 @@ class AnakAsuhStore extends FormRequest
             'education_level' => 'required|string|max:255',
             'status'          => 'required|in:Dhuafa,Yatim,Piatu',
             'description'     => 'nullable|string',
-            'photo'           => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'photo'           => 'nullable|image|mimes:jpg,jpeg,png|max:51200',
         ];
     }
 
@@ -52,7 +52,7 @@ class AnakAsuhStore extends FormRequest
             'status.in'                => 'Status tidak valid. Pilih: Dhuafa, Yatim, atau Piatu.',
             'photo.image'              => 'File foto harus berupa gambar.',
             'photo.mimes'              => 'Format foto harus jpg, jpeg, atau png.',
-            'photo.max'                => 'Ukuran foto tidak boleh lebih dari 2MB.',
+            'photo.max'                => 'File gambar kebesaran',
         ];
     }
 

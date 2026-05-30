@@ -162,8 +162,10 @@ class ProfileController extends Controller
     public function uploadQris(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'qris_code' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
+            'qris_code' => 'sometimes|image|mimes:jpeg,png,jpg|max:51200',
             'remove_image' => 'sometimes|boolean',
+        ], [
+            'qris_code.max' => 'File gambar kebesaran',
         ]);
 
         if ($validator->fails()) {

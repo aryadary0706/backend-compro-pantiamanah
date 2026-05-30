@@ -32,7 +32,7 @@ class DonationRecordUpdateRequest extends FormRequest
             'payment_method' => 'sometimes|required|in:bank_transfer,cash,qris,other',
             'bank_account_id' => 'nullable|exists:bank_accounts,id',
             'amount'         => 'sometimes|required|numeric|min:1000',
-            'payment_proof'  => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'payment_proof'  => 'nullable|image|mimes:jpg,jpeg,png|max:51200',
         ];
     }
 
@@ -51,7 +51,7 @@ class DonationRecordUpdateRequest extends FormRequest
             'amount.min'              => 'Jumlah donasi minimal Rp 1.000.',
             'payment_proof.image'     => 'Bukti pembayaran harus berupa gambar.',
             'payment_proof.mimes'     => 'Format bukti pembayaran harus jpg, jpeg, atau png.',
-            'payment_proof.max'       => 'Ukuran bukti pembayaran maksimal 2MB.',
+            'payment_proof.max'       => 'File gambar kebesaran',
         ];
     }
 
