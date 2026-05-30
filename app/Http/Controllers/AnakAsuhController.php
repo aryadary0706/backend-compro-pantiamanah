@@ -14,7 +14,7 @@ class AnakAsuhController extends Controller
     public function index()
     {
         try {
-            $anakAsuh = AnakAsuh::all();
+            $anakAsuh = AnakAsuh::orderBy('id', 'asc')->get();
 
             return response()->json([
                 'success' => true,
@@ -33,13 +33,14 @@ class AnakAsuhController extends Controller
     public function pagination(Request $request)
     {
         try {
-            $query = AnakAsuh::latest();
+            $query = AnakAsuh::orderBy('id', 'asc');
 
+            // Jika di frontend ada fitur pencarian nama
             if ($request->filled('name')) {
                 $query->where('name', 'like', '%' . $request->input('name') . '%');
             }
 
-            $anakAsuh = $query->paginate(6);
+            $anakAsuh = $query->paginate(10);
 
             return response()->json([
                 'success' => true,

@@ -18,7 +18,7 @@ class ProgramController extends Controller
     public function index()
     {
         try {
-            $programs = Program::latest()->get();
+            $programs = Program::orderBy('id', 'asc')->get();
 
             if ($programs->isEmpty()) {
                 return response()->json([
